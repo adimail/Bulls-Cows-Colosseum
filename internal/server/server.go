@@ -5,28 +5,31 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/adimail/colosseum/internal/sheets"
 	"github.com/adimail/colosseum/internal/websocket"
 )
 
 type Server struct {
-	Addr       string
-	StaticDir  string
-	Router     *http.ServeMux
-	Hub        *websocket.Hub
-	httpServer *http.Server
+	Addr          string
+	StaticDir     string
+	Router        *http.ServeMux
+	Hub           *websocket.Hub
+	httpServer    *http.Server
+	SheetsService *sheets.Service
 }
 
-func NewServer(addr, staticDir string) *Server {
-	hub := websocket.NewHub()
+func NewServer(addr, staticDir string, sheetsService *sheets.Service) *Server {
+	hub := websocket.NewHub(sheetsService)
 	go hub.Run()
 
 	router := http.NewServeMux()
 
 	s := &Server{
-		Addr:      addr,
-		StaticDir: staticDir,
-		Router:    router,
-		Hub:       hub,
+		Addr:          addr,
+		StaticDir:     staticDir,
+		Router:        router,
+		Hub:           hub,
+		SheetsService: sheetsService,
 	}
 
 	s.httpServer = &http.Server{

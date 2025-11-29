@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/adimail/colosseum/internal/game"
+	"github.com/adimail/colosseum/internal/sheets"
 	"github.com/gorilla/websocket"
 	"golang.org/x/time/rate"
 )
@@ -42,29 +43,31 @@ type GameAction struct {
 }
 
 type Hub struct {
-	clients      map[*Client]bool
-	Rooms        map[string]*Room
-	register     chan *Client
-	unregister   chan *Client
-	createRoom   chan *RoomAction
-	joinRoom     chan *RoomAction
-	spectateRoom chan *RoomAction
-	leaveRoom    chan *RoomAction
-	gameAction   chan *GameAction
-	Mutex        sync.Mutex
+	clients       map[*Client]bool
+	Rooms         map[string]*Room
+	register      chan *Client
+	unregister    chan *Client
+	createRoom    chan *RoomAction
+	joinRoom      chan *RoomAction
+	spectateRoom  chan *RoomAction
+	leaveRoom     chan *RoomAction
+	gameAction    chan *GameAction
+	sheetsService *sheets.Service
+	Mutex         sync.Mutex
 }
 
-func NewHub() *Hub {
+func NewHub(sheetsService *sheets.Service) *Hub {
 	hub := &Hub{
-		register:     make(chan *Client),
-		unregister:   make(chan *Client),
-		createRoom:   make(chan *RoomAction),
-		joinRoom:     make(chan *RoomAction),
-		spectateRoom: make(chan *RoomAction),
-		leaveRoom:    make(chan *RoomAction),
-		gameAction:   make(chan *GameAction),
-		clients:      make(map[*Client]bool),
-		Rooms:        make(map[string]*Room),
+		register:      make(chan *Client),
+		unregister:    make(chan *Client),
+		createRoom:    make(chan *RoomAction),
+		joinRoom:      make(chan *RoomAction),
+		spectateRoom:  make(chan *RoomAction),
+		leaveRoom:     make(chan *RoomAction),
+		gameAction:    make(chan *GameAction),
+		clients:       make(map[*Client]bool),
+		Rooms:         make(map[string]*Room),
+		sheetsService: sheetsService,
 	}
 	go hub.cleanupStaleRooms()
 	return hub
@@ -327,6 +330,9 @@ func (h *Hub) handleGameAction(action *GameAction) {
 			if game.IsValidSecret(action.Data) {
 				room.GameState.MakeGuess(pid, action.Data)
 				stateChanged = true
+				if room.GameState.Status == "completed" && h.sheetsService != nil {
+					go h.sheetsService.RecordGame(room.GameState)
+				}
 			} else {
 				errorMsg := `{"type":"error","payload":"Invalid guess. Must be 4 unique digits."}`
 				select {

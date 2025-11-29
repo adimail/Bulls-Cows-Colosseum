@@ -15,6 +15,7 @@ import (
 func (s *Server) routes() {
 	s.Router.HandleFunc("/api/health", s.handleHealthCheck)
 	s.Router.HandleFunc("/api/rooms", RateLimitMiddleware(s.handleGetRooms))
+	s.Router.HandleFunc("/api/games", RateLimitMiddleware(s.handleGetGames))
 	s.Router.HandleFunc("/ws", RateLimitMiddleware(s.handleWebSocket))
 
 	staticFileServer := http.FileServer(http.Dir(s.StaticDir))
@@ -96,6 +97,24 @@ func (s *Server) handleGetRooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(roomsList); err != nil {
 		http.Error(w, "Failed to encode rooms", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleGetGames(w http.ResponseWriter, r *http.Request) {
+	if s.SheetsService == nil {
+		http.Error(w, "Game history service is not available", http.StatusServiceUnavailable)
+		return
+	}
+
+	games, err := s.SheetsService.GetRecentGames(50)
+	if err != nil {
+		http.Error(w, "Failed to retrieve game history", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(games); err != nil {
+		http.Error(w, "Failed to encode game history", http.StatusInternalServerError)
 	}
 }
 

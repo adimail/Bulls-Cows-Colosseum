@@ -10,10 +10,19 @@ interface RoomInfo {
   createdAt: string;
 }
 
+interface GameHistory {
+  timestamp: string;
+  p1Name: string;
+  p2Name: string;
+  winner: string;
+}
+
 export default function HomePage() {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
+  const [history, setHistory] = useState<GameHistory[]>([]);
   const [joinCode, setJoinCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchRooms = () => {
@@ -25,8 +34,23 @@ export default function HomePage() {
       .finally(() => setLoading(false));
   };
 
+  const fetchHistory = () => {
+    setHistoryLoading(true);
+    fetch("/api/games")
+      .then((res) => {
+        if (!res.ok) {
+          return [];
+        }
+        return res.json();
+      })
+      .then((data) => setHistory(data || []))
+      .catch((err) => console.error(err))
+      .finally(() => setHistoryLoading(false));
+  };
+
   useEffect(() => {
     fetchRooms();
+    fetchHistory();
   }, []);
 
   const handleJoin = () => {
@@ -46,7 +70,7 @@ export default function HomePage() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full max-w-4xl">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl">
         <div className="space-y-8">
           <div className="bg-roma-stone/10 p-8 rounded-lg border border-roma-bronze/30">
             <h2 className="text-3xl font-cinzel text-roma-sand mb-6">
@@ -77,57 +101,118 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+
+          <div className="bg-roma-stone/10 p-8 rounded-lg border border-roma-bronze/30">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-cinzel text-roma-sand">
+                Public Lobby
+              </h2>
+              <button
+                onClick={fetchRooms}
+                disabled={loading}
+                className="text-roma-sand hover:text-roma-gold disabled:opacity-50 transition-colors"
+              >
+                <RefreshCw
+                  className={`h-6 w-6 ${loading ? "animate-spin" : ""}`}
+                />
+              </button>
+            </div>
+            <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
+              {loading && rooms.length === 0 ? (
+                <p className="text-roma-stone italic">Loading rooms...</p>
+              ) : rooms.length === 0 ? (
+                <p className="text-roma-stone italic">
+                  No open rooms available.
+                </p>
+              ) : (
+                rooms.map((room) => (
+                  <div
+                    key={room.roomCode}
+                    className="flex justify-between items-center p-4 bg-roma-black/50 border border-roma-stone/20 rounded"
+                  >
+                    <div>
+                      <p className="font-bold text-roma-gold">
+                        {room.ownerName}
+                      </p>
+                      <p className="text-sm text-roma-stone">
+                        Code: {room.roomCode}
+                      </p>
+                    </div>
+                    {room.playerCount >= 2 ? (
+                      <Link
+                        to={`/spectate/${room.roomCode}`}
+                        className="px-4 py-2 bg-roma-stone/20 hover:bg-roma-gold hover:text-roma-black text-roma-sand border border-roma-sand rounded transition-all"
+                      >
+                        Spectate
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/room/${room.roomCode}`}
+                        className="px-4 py-2 bg-roma-stone/20 hover:bg-roma-gold hover:text-roma-black text-roma-gold border border-roma-gold rounded transition-all"
+                      >
+                        Join
+                      </Link>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="bg-roma-stone/10 p-8 rounded-lg border border-roma-bronze/30">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-3xl font-cinzel text-roma-sand">
-              Public Lobby
+              Recent Matches
             </h2>
-            <button
-              onClick={fetchRooms}
-              disabled={loading}
-              className="text-roma-sand hover:text-roma-gold disabled:opacity-50 transition-colors"
-            >
-              <RefreshCw
-                className={`h-6 w-6 ${loading ? "animate-spin" : ""}`}
-              />
-            </button>
+            <div className="flex items-center gap-4">
+              <Link
+                to="/games"
+                className="text-roma-sand hover:text-roma-gold transition-colors text-sm font-semibold"
+              >
+                View All
+              </Link>
+              <button
+                onClick={fetchHistory}
+                disabled={historyLoading}
+                className="text-roma-sand hover:text-roma-gold disabled:opacity-50 transition-colors"
+              >
+                <RefreshCw
+                  className={`h-6 w-6 ${historyLoading ? "animate-spin" : ""}`}
+                />
+              </button>
+            </div>
           </div>
-          <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
-            {loading && rooms.length === 0 ? (
-              <p className="text-roma-stone italic">Loading rooms...</p>
-            ) : rooms.length === 0 ? (
-              <p className="text-roma-stone italic">No open rooms available.</p>
+          <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
+            {historyLoading && history.length === 0 ? (
+              <p className="text-roma-stone italic">Loading history...</p>
+            ) : history.length === 0 ? (
+              <p className="text-roma-stone italic">No recent matches found.</p>
             ) : (
-              rooms.map((room) => (
-                <div
-                  key={room.roomCode}
-                  className="flex justify-between items-center p-4 bg-roma-black/50 border border-roma-stone/20 rounded"
-                >
-                  <div>
-                    <p className="font-bold text-roma-gold">{room.ownerName}</p>
-                    <p className="text-sm text-roma-stone">
-                      Code: {room.roomCode}
-                    </p>
-                  </div>
-                  {room.playerCount >= 2 ? (
-                    <Link
-                      to={`/spectate/${room.roomCode}`}
-                      className="px-4 py-2 bg-roma-stone/20 hover:bg-roma-gold hover:text-roma-black text-roma-sand border border-roma-sand rounded transition-all"
-                    >
-                      Spectate
-                    </Link>
-                  ) : (
-                    <Link
-                      to={`/room/${room.roomCode}`}
-                      className="px-4 py-2 bg-roma-stone/20 hover:bg-roma-gold hover:text-roma-black text-roma-gold border border-roma-gold rounded transition-all"
-                    >
-                      Join
-                    </Link>
-                  )}
-                </div>
-              ))
+              <table className="w-full text-left text-sm">
+                <thead className="text-roma-sand uppercase">
+                  <tr>
+                    <th className="p-2">Winner</th>
+                    <th className="p-2">Players</th>
+                    <th className="p-2">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-roma-stone/20">
+                  {history.map((game, index) => (
+                    <tr key={index} className="hover:bg-roma-black/30">
+                      <td className="p-2 font-bold text-roma-gold">
+                        {game.winner}
+                      </td>
+                      <td className="p-2">
+                        {game.p1Name} vs {game.p2Name}
+                      </td>
+                      <td className="p-2 text-roma-stone">
+                        {new Date(game.timestamp).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         </div>

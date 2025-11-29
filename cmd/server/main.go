@@ -10,10 +10,16 @@ import (
 	"time"
 
 	"github.com/adimail/colosseum/internal/server"
+	"github.com/adimail/colosseum/internal/sheets"
 )
 
 func main() {
-	srv := server.NewServer(":8080", "./dist")
+	sheetsService, err := sheets.New()
+	if err != nil {
+		slog.Warn("Could not initialize Google Sheets service. Game history will be unavailable.", "error", err)
+	}
+
+	srv := server.NewServer(":8080", "./dist", sheetsService)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
