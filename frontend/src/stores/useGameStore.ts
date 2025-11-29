@@ -34,6 +34,7 @@ interface GameStore {
   playerId: string | null;
   role: "player" | "spectator" | null;
   error: string | null;
+  notification: string | null;
   connect: (navigate: NavigateFunction) => void;
   createRoom: (name: string) => void;
   joinRoom: (name: string, code: string) => void;
@@ -42,6 +43,7 @@ interface GameStore {
   setSecret: (secret: string) => void;
   submitGuess: (guess: string) => void;
   restartGame: () => void;
+  pokeOpponent: () => void;
   clearError: () => void;
 }
 
@@ -51,6 +53,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   playerId: null,
   role: null,
   error: null,
+  notification: null,
 
   connect: (navigate) => {
     if (get().socket) return;
@@ -66,6 +69,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
       socket.onmessage = (event) => {
         const msg = JSON.parse(event.data);
+
+        const setNotificationWithTimeout = (message: string) => {
+          set({ notification: message });
+          setTimeout(() => {
+            set({ notification: null });
+          }, 5000);
+        };
+
         switch (msg.type) {
           case "state":
             set({
@@ -80,6 +91,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
             break;
           case "redirect":
             navigate(msg.payload);
+            break;
+          case "poked":
+            setNotificationWithTimeout(
+              `Your opponent says: ${msg.payload.message}`,
+            );
+            window.dispatchEvent(new CustomEvent("playPokeSound"));
+            break;
+          case "notification":
+            setNotificationWithTimeout(msg.payload.message);
             break;
         }
       };
@@ -187,6 +207,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
       socket.send(
         JSON.stringify({
           type: "restart",
+          payload: null,
+        }),
+      );
+    }
+  },
+
+  pokeOpponent: () => {
+    const socket = get().socket;
+    if (socket) {
+      socket.send(
+        JSON.stringify({
+          type: "poke",
           payload: null,
         }),
       );

@@ -24,6 +24,41 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const navigate = useNavigate();
+  const [serverStatus, setServerStatus] = useState<
+    "checking" | "online" | "offline"
+  >("checking");
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    let timeoutId: NodeJS.Timeout;
+
+    const checkHealth = async () => {
+      try {
+        const response = await fetch("/api/health");
+        if (response.ok) {
+          setServerStatus("online");
+          clearInterval(intervalId);
+          clearTimeout(timeoutId);
+        }
+      } catch (error) {
+        console.log("Server health check failed, retrying...");
+      }
+    };
+
+    checkHealth();
+    intervalId = setInterval(checkHealth, 3000);
+    timeoutId = setTimeout(() => {
+      if (serverStatus === "checking") {
+        setServerStatus("offline");
+        clearInterval(intervalId);
+      }
+    }, 50000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, [serverStatus]);
 
   const fetchRooms = () => {
     setLoading(true);
@@ -49,15 +84,56 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    fetchRooms();
-    fetchHistory();
-  }, []);
+    if (serverStatus === "online") {
+      fetchRooms();
+      fetchHistory();
+    }
+  }, [serverStatus]);
 
   const handleJoin = () => {
     if (joinCode.length === 6) {
       navigate(`/room/${joinCode}`);
     }
   };
+
+  const StatusScreen = ({
+    title,
+    message,
+  }: {
+    title: string;
+    message: string;
+  }) => (
+    <div
+      className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 text-center"
+      style={{
+        backgroundImage:
+          "url(https://images.unsplash.com/photo-1555992828-ca4dbe41d294?q=80&w=1364&auto=format&fit=crop)",
+      }}
+    >
+      <div className="bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze/30 max-w-lg">
+        <h1 className="text-3xl font-cinzel text-bronze mb-4">{title}</h1>
+        <p className="text-lg text-stone-light">{message}</p>
+      </div>
+    </div>
+  );
+
+  if (serverStatus === "checking") {
+    return (
+      <StatusScreen
+        title="Connecting to the Colosseum..."
+        message="The server is waking up. Please give it a moment to prepare the arena."
+      />
+    );
+  }
+
+  if (serverStatus === "offline") {
+    return (
+      <StatusScreen
+        title="The Colosseum is Quiet"
+        message="The server could not be reached. It might be temporarily down or you're offline. Please try again later."
+      />
+    );
+  }
 
   return (
     <div

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGameStore } from "../stores/useGameStore";
+import { BellRing } from "lucide-react";
 
 export default function GameRoomPage() {
   const { gameId } = useParams();
@@ -15,10 +16,12 @@ export default function GameRoomPage() {
     restartGame,
     error: globalError,
     clearError,
+    pokeOpponent,
   } = useGameStore();
   const [input, setInput] = useState("");
   const [playerName, setPlayerName] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
+  const [canPoke, setCanPoke] = useState(true);
 
   useEffect(() => {
     if (globalError) {
@@ -35,6 +38,13 @@ export default function GameRoomPage() {
     if (playerName.trim() && gameId) {
       joinRoom(playerName.trim(), gameId);
     }
+  };
+
+  const handlePoke = () => {
+    if (!canPoke) return;
+    pokeOpponent();
+    setCanPoke(false);
+    setTimeout(() => setCanPoke(true), 10000); // 10 second cooldown
   };
 
   if (!gameState) {
@@ -98,6 +108,11 @@ export default function GameRoomPage() {
   const myState = isPlayer1 ? gameState.p1 : gameState.p2;
   const oppState = isPlayer1 ? gameState.p2 : gameState.p1;
   const isMyTurn = gameState.turn === playerId;
+
+  const showPokeButton =
+    oppState.name &&
+    ((gameState.status === "active" && !isMyTurn) ||
+      (gameState.status === "setup" && myState.isReady && !oppState.isReady));
 
   const validateInput = (value: string): string | null => {
     if (value.length !== 4) {
@@ -294,21 +309,40 @@ export default function GameRoomPage() {
                 {myState.guesses.map((g, i) => (
                   <div
                     key={i}
-                    className="flex justify-between bg-dark-stone/50 p-2"
+                    className="flex justify-between items-center bg-dark-stone/50 p-2"
                   >
-                    <span className="font-nums tracking-wider">{g.code}</span>
-                    <span className="text-stone-light">
-                      {g.bulls}B {g.cows}C
+                    <span className="font-nums tracking-wider text-xl">
+                      {g.code}
                     </span>
+                    <div className="flex items-center gap-3 font-nums text-lg">
+                      <span className="text-bronze font-bold w-8 text-center">
+                        {g.bulls}B
+                      </span>
+                      <span className="text-parchment w-8 text-center">
+                        {g.cows}C
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div className="bg-dark-card/80 backdrop-blur-sm p-4 md:p-6 border border-bronze/30">
-              <h3 className="text-lg md:text-xl font-cinzel text-stone-light mb-2">
-                {oppState.name || "Opponent"}
-              </h3>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-lg md:text-xl font-cinzel text-stone-light">
+                  {oppState.name || "Opponent"}
+                </h3>
+                {showPokeButton && (
+                  <button
+                    onClick={handlePoke}
+                    disabled={!canPoke}
+                    className="flex items-center gap-1 text-xs bg-stone-light/20 px-2 py-1 text-stone-light transition-colors hover:bg-stone-light/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <BellRing size={12} />
+                    {canPoke ? "Poke" : "Poked"}
+                  </button>
+                )}
+              </div>
               <div className="mb-4 text-2xl md:text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border border-bronze/30 text-stone-light">
                 {gameState.status === "completed" ? oppState.secret : "????"}
               </div>
@@ -317,12 +351,19 @@ export default function GameRoomPage() {
                 {oppState.guesses.map((g, i) => (
                   <div
                     key={i}
-                    className="flex justify-between bg-dark-stone/50 p-2"
+                    className="flex justify-between items-center bg-dark-stone/50 p-2"
                   >
-                    <span className="font-nums tracking-wider">{g.code}</span>
-                    <span className="text-stone-light">
-                      {g.bulls}B {g.cows}C
+                    <span className="font-nums tracking-wider text-xl">
+                      {g.code}
                     </span>
+                    <div className="flex items-center gap-3 font-nums text-lg">
+                      <span className="text-bronze font-bold w-8 text-center">
+                        {g.bulls}B
+                      </span>
+                      <span className="text-parchment w-8 text-center">
+                        {g.cows}C
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

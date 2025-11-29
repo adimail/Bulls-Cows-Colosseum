@@ -105,6 +105,8 @@ func (c *Client) handleMessage(msg []byte) {
 		c.hub.gameAction <- &GameAction{Client: c, Type: "guess", Data: p.Data}
 	case "restart":
 		c.hub.gameAction <- &GameAction{Client: c, Type: "restart"}
+	case "poke":
+		c.hub.gameAction <- &GameAction{Client: c, Type: "poke"}
 	}
 }
 

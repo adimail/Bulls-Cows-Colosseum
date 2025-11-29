@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -140,6 +141,16 @@ func (h *Hub) handleUnregister(client *Client) {
 		}
 	} else {
 		pid := game.PlayerID(client.playerID)
+		var leavingPlayerName string
+		if pid == game.Player1 {
+			leavingPlayerName = room.GameState.P1.Name
+		} else {
+			leavingPlayerName = room.GameState.P2.Name
+		}
+
+		if leavingPlayerName != "" {
+			h.broadcastNotification(room, fmt.Sprintf("%s has left the game.", leavingPlayerName))
+		}
 
 		if pid == game.Player1 {
 			if room.GameState.P2.Name != "" {
@@ -265,6 +276,7 @@ func (h *Hub) handleJoinRoom(action *RoomAction) {
 	room.LastActivityAt = time.Now()
 	room.GameState.Status = "setup"
 
+	h.broadcastNotification(room, fmt.Sprintf("%s has joined the game!", room.GameState.P2.Name))
 	h.broadcastState(room)
 }
 
@@ -355,10 +367,73 @@ func (h *Hub) handleGameAction(action *GameAction) {
 		if room.GameState.P1.IsReady && room.GameState.P2.IsReady {
 			room.GameState.Reset()
 		}
+	case "poke":
+		canPoke := false
+		if room.GameState.Status == "active" && room.GameState.Turn != pid {
+			canPoke = true
+		} else if room.GameState.Status == "setup" {
+			if pid == game.Player1 && room.GameState.P1.IsReady && !room.GameState.P2.IsReady {
+				canPoke = true
+			} else if pid == game.Player2 && room.GameState.P2.IsReady && !room.GameState.P1.IsReady {
+				canPoke = true
+			}
+		}
+
+		if canPoke {
+			var opponentClient *Client
+			opponentPID := game.Player1
+			if pid == game.Player1 {
+				opponentPID = game.Player2
+			}
+
+			for c := range room.Clients {
+				if c.playerID == string(opponentPID) {
+					opponentClient = c
+					break
+				}
+			}
+
+			if opponentClient != nil {
+				pokePayload := map[string]string{"message": "Hurry up!"}
+				payloadBytes, _ := json.Marshal(pokePayload)
+				pokeMsg := map[string]interface{}{
+					"type":    "poked",
+					"payload": json.RawMessage(payloadBytes),
+				}
+				msgBytes, _ := json.Marshal(pokeMsg)
+
+				select {
+				case opponentClient.send <- msgBytes:
+				default:
+				}
+			}
+		}
 	}
 
 	if stateChanged {
 		h.broadcastState(room)
+	}
+}
+
+func (h *Hub) broadcastNotification(room *Room, message string) {
+	notificationPayload := map[string]string{"message": message}
+	payloadBytes, _ := json.Marshal(notificationPayload)
+	msg := map[string]interface{}{
+		"type":    "notification",
+		"payload": json.RawMessage(payloadBytes),
+	}
+	msgBytes, _ := json.Marshal(msg)
+
+	clients := make([]*Client, 0, len(room.Clients))
+	for client := range room.Clients {
+		clients = append(clients, client)
+	}
+
+	for _, client := range clients {
+		select {
+		case client.send <- msgBytes:
+		default:
+		}
 	}
 }
 
