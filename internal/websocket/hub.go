@@ -447,7 +447,7 @@ func (h *Hub) cleanupStaleRooms() {
 			if room, ok := h.Rooms[code]; ok {
 				room.Mutex.Lock()
 				for client := range room.Clients {
-					close(client.send)
+					client.conn.Close()
 				}
 				room.Mutex.Unlock()
 				delete(h.Rooms, code)
