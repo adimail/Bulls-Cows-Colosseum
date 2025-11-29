@@ -75,9 +75,18 @@ export default function HomePage() {
           <h1 className="text-4xl md:text-6xl font-cinzel text-bronze mb-4">
             Bulls & Cows
           </h1>
-          <p className="text-lg md:text-xl text-stone-light">
-            The Ancient Game of Code Breaking
-          </p>
+          <div className="flex items-center justify-center gap-6">
+            <p className="text-lg md:text-xl text-stone-light">
+              The Ancient Game of Code Breaking
+            </p>
+            {" | "}
+            <Link
+              to="/help"
+              className="text-lg md:text-xl text-stone-light hover:text-bronze transition-colors"
+            >
+              How to Play
+            </Link>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 w-full max-w-7xl">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function JoinRoomPage() {
   const [code, setCode] = useState("");
@@ -21,9 +21,17 @@ export default function JoinRoomPage() {
       }}
     >
       <div className="w-full max-w-md bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30">
-        <h2 className="text-2xl md:text-3xl font-cinzel text-bronze mb-6 text-center">
-          Join Game
-        </h2>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl md:text-3xl font-cinzel text-bronze">
+            Join Game
+          </h2>
+          <Link
+            to="/help"
+            className="text-sm text-stone-light hover:text-bronze transition-colors"
+          >
+            How to Play?
+          </Link>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-stone-light mb-2">Room Code</label>
