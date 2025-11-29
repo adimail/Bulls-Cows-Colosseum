@@ -8,6 +8,7 @@ import SpectatePage from "./pages/SpectatePage";
 import GamesPage from "./pages/GamesPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import HelpPage from "./pages/HelpPage";
+import ReloadPrompt from "./components/ReloadPrompt";
 
 export default function App() {
   const navigate = useNavigate();
@@ -18,14 +19,17 @@ export default function App() {
   }, [connect, navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/create" element={<CreateRoomPage />} />
-      <Route path="/games" element={<GamesPage />} />
-      <Route path="/help" element={<HelpPage />} />
-      <Route path="/room/:gameId" element={<GameRoomPage />} />
-      <Route path="/spectate/:gameId" element={<SpectatePage />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/create" element={<CreateRoomPage />} />
+        <Route path="/games" element={<GamesPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/room/:gameId" element={<GameRoomPage />} />
+        <Route path="/spectate/:gameId" element={<SpectatePage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <ReloadPrompt />
+    </>
   );
 }

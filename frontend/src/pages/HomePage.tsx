@@ -73,13 +73,13 @@ export default function HomePage() {
       >
         <header className="mb-8 md:mb-12 text-center">
           <h1 className="text-4xl md:text-6xl font-cinzel text-bronze mb-4">
-            Bulls & Cows
+            Bulls & Cows Colosseum
           </h1>
-          <div className="flex items-center justify-center gap-6">
+          <div className="flex md:flex-row flex-col  items-center justify-center md:gap-6">
             <p className="text-lg md:text-xl text-stone-light">
               The Ancient Game of Code Breaking
             </p>
-            {" | "}
+            <span className="hidden md:block">{" | "}</span>
             <Link
               to="/help"
               className="text-lg md:text-xl text-stone-light hover:text-bronze transition-colors"
