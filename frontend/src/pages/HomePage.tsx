@@ -68,22 +68,22 @@ export default function HomePage() {
       }}
     >
       <div
-        className="min-h-screen p-8 flex flex-col items-center backdrop-blur-xs"
+        className="min-h-screen p-4 md:p-8 flex flex-col items-center backdrop-blur-xs"
         style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
       >
-        <header className="mb-12 text-center">
-          <h1 className="text-6xl font-cinzel text-bronze mb-4">
+        <header className="mb-8 md:mb-12 text-center">
+          <h1 className="text-4xl md:text-6xl font-cinzel text-bronze mb-4">
             Bulls & Cows
           </h1>
-          <p className="text-xl text-stone-light">
+          <p className="text-lg md:text-xl text-stone-light">
             The Ancient Game of Code Breaking
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full max-w-7xl">
-          <div className="space-y-8">
-            <div className="bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze/30">
-              <h2 className="text-3xl font-cinzel text-stone-light mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 w-full max-w-7xl">
+          <div className="space-y-8 md:sticky md:top-10 md:h-fit">
+            <div className="bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30">
+              <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light mb-6">
                 Start Playing
               </h2>
               <div className="space-y-4">
@@ -112,9 +112,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze/30">
+            <div className="bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-cinzel text-stone-light">
+                <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light">
                   Public Lobby
                 </h2>
                 <button
@@ -170,9 +170,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze/30">
+          <div className="bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30 h-fit">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-cinzel text-stone-light">
+              <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light">
                 Recent Matches
               </h2>
               <div className="flex items-center gap-4">

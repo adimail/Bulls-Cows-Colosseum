@@ -39,9 +39,9 @@ export default function GamesPage() {
           "url(https://images.unsplash.com/photo-1509024644558-2f56ce76c490?q=80&w=2670&auto=format&fit=crop)",
       }}
     >
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <header className="mb-8 text-center">
-          <h1 className="text-5xl font-cinzel text-bronze mb-4">
+          <h1 className="text-3xl md:text-5xl font-cinzel text-bronze mb-4">
             Game History
           </h1>
           <Link
@@ -52,9 +52,9 @@ export default function GamesPage() {
           </Link>
         </header>
 
-        <div className="max-w-4xl mx-auto bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze/30">
+        <div className="max-w-4xl mx-auto bg-dark-card/80 backdrop-blur-sm p-4 md:p-8 border border-bronze/30">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-cinzel text-stone-light">
+            <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light">
               All Matches
             </h2>
             <button
@@ -76,22 +76,22 @@ export default function GamesPage() {
               <table className="w-full text-left">
                 <thead className="text-stone-light uppercase text-sm sticky top-0 bg-dark-card/80 backdrop-blur-sm">
                   <tr>
-                    <th className="p-3">Date</th>
-                    <th className="p-3">Winner</th>
-                    <th className="p-3">Players</th>
+                    <th className="p-2 md:p-3">Date</th>
+                    <th className="p-2 md:p-3">Winner</th>
+                    <th className="p-2 md:p-3">Players</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-bronze/20">
                   {history.map((game, index) => (
                     <tr key={index} className="hover:bg-dark-stone/30">
-                      <td className="p-3 text-stone-light">
+                      <td className="p-2 md:p-3 text-stone-light">
                         {new Date(game.timestamp).toLocaleString()}
                       </td>
 
-                      <td className="p-3 font-bold text-bronze">
+                      <td className="p-2 md:p-3 font-bold text-bronze">
                         {game.winner}
                       </td>
-                      <td className="p-3">
+                      <td className="p-2 md:p-3">
                         {game.p1Name} vs {game.p2Name}
                       </td>
                     </tr>

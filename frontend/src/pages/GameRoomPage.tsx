@@ -200,169 +200,174 @@ export default function GameRoomPage() {
 
   return (
     <div
-      className="min-h-screen bg-image-overlay text-parchment font-roman p-4"
+      className="min-h-screen bg-image-overlay text-parchment font-roman flex flex-col"
       style={{
         backgroundImage:
           "url(https://images.unsplash.com/photo-1509024644558-2f56ce76c490?q=80&w=2670&auto=format&fit=crop)",
       }}
     >
-      <header className="flex justify-between items-center mb-8 border-b border-bronze/20 pb-4">
-        <div>
-          <h1 className="text-2xl font-cinzel text-bronze">
-            Room: {gameState.roomCode}
-          </h1>
-          <p className="text-stone-light">
-            Status: <span className="uppercase">{gameState.status}</span>
-            {" | "}
-            Spectators: <span>{gameState.spectators}</span>
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-            }}
-            className="cursor-pointer bg-stone-light/20 px-4 py-2 text-stone-light transition-colors hover:bg-stone-light/40"
-          >
-            Copy Link
-          </button>
-          <button
-            onClick={handleLeave}
-            className="cursor-pointer bg-crimson/80 px-4 py-2 text-parchment transition-colors hover:bg-crimson"
-          >
-            Leave Room
-          </button>
-        </div>
-      </header>
-
-      {gameState.status === "completed" && (
-        <div className="my-8 bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze text-center flex flex-col items-center">
-          <h2 className="text-4xl font-cinzel text-bronze mb-4">Game Over</h2>
-
-          <p className="text-2xl mb-6">
-            {gameState.winner === playerId ? "You Won!" : "You Lost!"}
-          </p>
-
-          <div className="flex flex-col items-center gap-4">
-            {renderRematchControls()}
-
+      <main className="flex-grow overflow-y-auto p-4 md:p-8 mb-40">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-bronze/20 pb-4 gap-4">
+          <div>
+            <h1 className="text-xl md:text-2xl font-cinzel text-bronze">
+              Room: {gameState.roomCode}
+            </h1>
+            <p className="text-stone-light text-sm">
+              Status: <span className="uppercase">{gameState.status}</span>
+              {" | "}
+              Spectators: <span>{gameState.spectators}</span>
+            </p>
+          </div>
+          <div className="flex items-center gap-2 md:gap-4">
             <button
               onClick={() => {
-                leaveRoom();
-                navigate("/");
+                navigator.clipboard.writeText(window.location.href);
               }}
-              className="border border-stone-light text-stone-light px-6 py-2"
+              className="cursor-pointer bg-stone-light/20 px-3 py-2 text-sm md:px-4 md:py-2 md:text-base text-stone-light transition-colors hover:bg-stone-light/40"
             >
-              Lobby
+              Copy Link
+            </button>
+            <button
+              onClick={handleLeave}
+              className="cursor-pointer bg-crimson/80 px-3 py-2 text-sm md:px-4 md:py-2 md:text-base text-parchment transition-colors hover:bg-crimson"
+            >
+              Leave Room
             </button>
           </div>
-        </div>
-      )}
+        </header>
 
-      {gameState.status === "waiting" && !myState.name && (
-        <div className="text-center py-20">
-          <h2 className="text-4xl font-cinzel text-stone-light mb-4">
-            Waiting for Opponent...
-          </h2>
-          <p className="text-xl">Share the room code: {gameState.roomCode}</p>
-        </div>
-      )}
+        {gameState.status === "completed" && (
+          <div className="my-8 bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze text-center flex flex-col items-center">
+            <h2 className="text-3xl md:text-4xl font-cinzel text-bronze mb-4">
+              Game Over
+            </h2>
 
-      {(gameState.status === "setup" ||
-        gameState.status === "active" ||
-        gameState.status === "completed" ||
-        (gameState.status === "waiting" && myState.name)) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze/30">
-            <h3 className="text-xl font-cinzel text-bronze mb-2">
-              {myState.name} (You)
-            </h3>
-            <div
-              className={`mb-4 text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border transition-colors ${
-                myState.secret ? "border-bronze" : "border-bronze/30"
-              }`}
-            >
-              {myState.secret || "????"}
+            <p className="text-xl md:text-2xl mb-6">
+              {gameState.winner === playerId ? "You Won!" : "You Lost!"}
+            </p>
+
+            <div className="flex flex-col items-center gap-4">
+              {renderRematchControls()}
+
+              <button
+                onClick={() => {
+                  leaveRoom();
+                  navigate("/");
+                }}
+                className="border border-stone-light text-stone-light px-6 py-2"
+              >
+                Lobby
+              </button>
             </div>
-
-            <div className="h-64 overflow-y-auto custom-scrollbar mb-4 space-y-2">
-              {myState.guesses.map((g, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between bg-dark-stone/50 p-2"
-                >
-                  <span className="font-nums tracking-wider">{g.code}</span>
-                  <span className="text-stone-light">
-                    {g.bulls}B {g.cows}C
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {gameState.status !== "completed" && (
-              <>
-                <div className="h-10 text-center mb-2">
-                  {inputError ? (
-                    <p className="text-crimson">{inputError}</p>
-                  ) : (
-                    <p className="text-stone-light">{getStatusMessage()}</p>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    maxLength={4}
-                    value={input}
-                    onChange={(e) =>
-                      setInput(e.target.value.replace(/\D/g, ""))
-                    }
-                    placeholder={!myState.secret ? "Set Secret" : "Enter Guess"}
-                    className={`flex-1 bg-input-bg border p-2 text-parchment text-center font-nums tracking-widest ${
-                      inputError
-                        ? "border-crimson"
-                        : "border-bronze/50 focus:border-bronze"
-                    }`}
-                    disabled={
-                      !!myState.secret &&
-                      (gameState.status === "setup" || !isMyTurn)
-                    }
-                  />
-                  <button
-                    onClick={handleAction}
-                    disabled={
-                      input.length !== 4 ||
-                      (!!myState.secret &&
-                        (gameState.status === "setup" || !isMyTurn))
-                    }
-                    className="bg-bronze text-dark-stone font-bold px-4 disabled:opacity-50"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </>
-            )}
           </div>
+        )}
 
-          <div className="bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze/30">
-            <h3 className="text-xl font-cinzel text-stone-light mb-2">
-              {oppState.name || "Opponent"}
-            </h3>
-            <div className="mb-4 text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border border-bronze/30 text-stone-light">
-              {gameState.status === "completed" ? oppState.secret : "????"}
+        {gameState.status === "waiting" && !myState.name && (
+          <div className="text-center py-20">
+            <h2 className="text-3xl md:text-4xl font-cinzel text-stone-light mb-4">
+              Waiting for Opponent...
+            </h2>
+            <p className="text-lg md:text-xl">
+              Share the room code: {gameState.roomCode}
+            </p>
+          </div>
+        )}
+
+        {(gameState.status === "setup" ||
+          gameState.status === "active" ||
+          gameState.status === "completed" ||
+          (gameState.status === "waiting" && myState.name)) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+            <div className="bg-dark-card/80 backdrop-blur-sm p-4 md:p-6 border border-bronze/30">
+              <h3 className="text-lg md:text-xl font-cinzel text-bronze mb-2">
+                {myState.name} (You)
+              </h3>
+              <div
+                className={`mb-4 text-2xl md:text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border transition-colors ${
+                  myState.secret ? "border-bronze" : "border-bronze/30"
+                }`}
+              >
+                {myState.secret || "????"}
+              </div>
+
+              <div className="h-48 md:h-64 overflow-y-auto custom-scrollbar mb-4 space-y-2">
+                {myState.guesses.map((g, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between bg-dark-stone/50 p-2"
+                  >
+                    <span className="font-nums tracking-wider">{g.code}</span>
+                    <span className="text-stone-light">
+                      {g.bulls}B {g.cows}C
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="h-64 overflow-y-auto custom-scrollbar space-y-2">
-              {oppState.guesses.map((g, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between bg-dark-stone/50 p-2"
-                >
-                  <span className="font-nums tracking-wider">{g.code}</span>
-                  <span className="text-stone-light">
-                    {g.bulls}B {g.cows}C
-                  </span>
-                </div>
-              ))}
+            <div className="bg-dark-card/80 backdrop-blur-sm p-4 md:p-6 border border-bronze/30">
+              <h3 className="text-lg md:text-xl font-cinzel text-stone-light mb-2">
+                {oppState.name || "Opponent"}
+              </h3>
+              <div className="mb-4 text-2xl md:text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border border-bronze/30 text-stone-light">
+                {gameState.status === "completed" ? oppState.secret : "????"}
+              </div>
+
+              <div className="h-48 md:h-64 overflow-y-auto custom-scrollbar space-y-2">
+                {oppState.guesses.map((g, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between bg-dark-stone/50 p-2"
+                  >
+                    <span className="font-nums tracking-wider">{g.code}</span>
+                    <span className="text-stone-light">
+                      {g.bulls}B {g.cows}C
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+      {gameState.status !== "completed" && (
+        <div className="fixed left-0 right-0 ">
+          <div className="fixed md:bottom-5 bottom-0 left-0 right-0 max-w-lg mx-auto bg-dark-stone border border-bronze/20 p-4">
+            <div className="h-10 text-center">
+              {inputError ? (
+                <p className="text-crimson">{inputError}</p>
+              ) : (
+                <p className="text-stone-light">{getStatusMessage()}</p>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                maxLength={4}
+                value={input}
+                onChange={(e) => setInput(e.target.value.replace(/\D/g, ""))}
+                placeholder={!myState.secret ? "Set Secret" : "Enter Guess"}
+                className={`flex-1 bg-input-bg border p-2 text-parchment text-center font-nums tracking-widest ${
+                  inputError
+                    ? "border-crimson"
+                    : "border-bronze/50 focus:border-bronze"
+                }`}
+                disabled={
+                  !!myState.secret &&
+                  (gameState.status === "setup" || !isMyTurn)
+                }
+              />
+              <button
+                onClick={handleAction}
+                disabled={
+                  input.length !== 4 ||
+                  (!!myState.secret &&
+                    (gameState.status === "setup" || !isMyTurn))
+                }
+                className="bg-bronze text-dark-stone font-bold px-4 disabled:opacity-50"
+              >
+                Submit
+              </button>
             </div>
           </div>
         </div>
