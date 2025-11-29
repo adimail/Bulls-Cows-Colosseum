@@ -29,8 +29,8 @@ export default function HomePage() {
   >("checking");
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-    let timeoutId: NodeJS.Timeout;
+    let intervalId: number;
+    let timeoutId: number;
 
     const checkHealth = async () => {
       try {
