@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:wght@400;600&family=Crimson+Pro:wght@400;700&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-roma-stone: #8a817c;
+  --color-roma-black: #2c2c2c;
+  --color-roma-white: #f0e9e0;
+  --color-roma-red: #8b1e2a;
+  --color-roma-gold: #d4af37;
+  --color-roma-bronze: #a9713f;
+  --color-roma-sand: #c5a46d;
+
+  --font-cinzel: "Cinzel", serif;
+  --font-roman: "Cormorant Garamond", serif;
+  --font-nums: "Crimson Pro", serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+  }
+
+  body {
+    @apply bg-roma-black m-0 min-h-screen;
+  }
+}
+
+button {
+  cursor: pointer;
+}
+
+@layer utilities {
+  .clip-path-banner-bottom {
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: theme("colors.roma-stone / 10%");
+    border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: theme("colors.roma-bronze / 50%");
+    border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: theme("colors.roma-bronze / 70%");
+  }
+}
