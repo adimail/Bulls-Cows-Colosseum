@@ -40,15 +40,21 @@ export default function GameRoomPage() {
   if (!gameState) {
     if (globalError && !inputError) {
       return (
-        <div className="min-h-screen bg-roma-black text-roma-white flex flex-col items-center justify-center p-4">
-          <div className="w-full max-w-md bg-roma-stone/10 p-8 rounded-lg border border-roma-red text-center">
-            <h2 className="text-3xl font-cinzel text-roma-red mb-4">
+        <div
+          className="min-h-screen bg-image-overlay text-parchment flex flex-col items-center justify-center p-4"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1509024644558-2f56ce76c490?q=80&w=2670&auto=format&fit=crop)",
+          }}
+        >
+          <div className="w-full max-w-md bg-dark-card/80 backdrop-blur-sm p-8 border border-crimson text-center">
+            <h2 className="text-3xl font-cinzel text-crimson mb-4">
               Error Joining Room
             </h2>
             <p className="text-lg mb-8">{globalError}</p>
             <button
               onClick={() => navigate("/")}
-              className="w-full py-3 bg-roma-gold hover:bg-roma-gold/80 text-roma-black font-bold rounded transition-colors"
+              className="w-full py-3 bg-bronze hover:bg-bronze/80 text-dark-stone font-bold transition-colors"
             >
               Return to Lobby
             </button>
@@ -58,21 +64,27 @@ export default function GameRoomPage() {
     }
 
     return (
-      <div className="min-h-screen bg-roma-black text-roma-white flex items-center justify-center">
-        <div className="bg-roma-stone/10 p-8 rounded border border-roma-bronze">
-          <h2 className="text-2xl font-cinzel text-roma-gold mb-4">
+      <div
+        className="min-h-screen bg-image-overlay text-parchment flex items-center justify-center p-4"
+        style={{
+          backgroundImage:
+            "url(https://images.unsplash.com/photo-1509024644558-2f56ce76c490?q=80&w=2670&auto=format&fit=crop)",
+        }}
+      >
+        <div className="bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze">
+          <h2 className="text-2xl font-cinzel text-bronze mb-4">
             Join Room {gameId}
           </h2>
           <input
             type="text"
             placeholder="Enter your name"
-            className="w-full bg-roma-black border border-roma-stone p-2 mb-4 text-white"
+            className="w-full bg-input-bg border border-bronze/50 p-2 mb-4 text-parchment"
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
           />
           <button
             onClick={handleJoinClick}
-            className="w-full bg-roma-gold text-roma-black font-bold py-2 rounded"
+            className="w-full bg-bronze text-dark-stone font-bold py-2"
             disabled={!playerName}
           >
             Join Game
@@ -144,7 +156,7 @@ export default function GameRoomPage() {
       return (
         <button
           onClick={restartGame}
-          className="bg-roma-gold text-roma-black px-6 py-2 rounded font-bold"
+          className="bg-bronze text-dark-stone px-6 py-2 font-bold"
         >
           Play Again
         </button>
@@ -154,7 +166,7 @@ export default function GameRoomPage() {
       return (
         <button
           disabled
-          className="bg-roma-stone text-roma-black px-6 py-2 rounded font-bold opacity-70"
+          className="bg-stone-light text-dark-stone px-6 py-2 font-bold opacity-70"
         >
           Waiting for Opponent...
         </button>
@@ -163,13 +175,13 @@ export default function GameRoomPage() {
     if (!myState.isReady && oppState.isReady) {
       return (
         <div className="flex flex-col items-center justify-center gap-4 text-center">
-          <p className="text-roma-sand">
+          <p className="text-stone-light">
             {oppState.name || "Opponent"} wants a rematch!
           </p>
 
           <button
             onClick={restartGame}
-            className="bg-roma-gold text-roma-black px-6 py-2 rounded font-bold"
+            className="bg-bronze text-dark-stone px-6 py-2 font-bold"
           >
             Accept Rematch
           </button>
@@ -179,7 +191,7 @@ export default function GameRoomPage() {
     return (
       <button
         disabled
-        className="bg-roma-stone text-roma-black px-6 py-2 rounded font-bold opacity-70"
+        className="bg-stone-light text-dark-stone px-6 py-2 font-bold opacity-70"
       >
         Starting...
       </button>
@@ -187,13 +199,19 @@ export default function GameRoomPage() {
   };
 
   return (
-    <div className="min-h-screen bg-roma-black text-roma-white font-roman p-4">
-      <header className="flex justify-between items-center mb-8 border-b border-roma-stone/20 pb-4">
+    <div
+      className="min-h-screen bg-image-overlay text-parchment font-roman p-4"
+      style={{
+        backgroundImage:
+          "url(https://images.unsplash.com/photo-1509024644558-2f56ce76c490?q=80&w=2670&auto=format&fit=crop)",
+      }}
+    >
+      <header className="flex justify-between items-center mb-8 border-b border-bronze/20 pb-4">
         <div>
-          <h1 className="text-2xl font-cinzel text-roma-gold">
+          <h1 className="text-2xl font-cinzel text-bronze">
             Room: {gameState.roomCode}
           </h1>
-          <p className="text-roma-stone">
+          <p className="text-stone-light">
             Status: <span className="uppercase">{gameState.status}</span>
             {" | "}
             Spectators: <span>{gameState.spectators}</span>
@@ -204,13 +222,13 @@ export default function GameRoomPage() {
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
             }}
-            className="cursor-pointer rounded bg-roma-stone/20 px-4 py-2 text-roma-sand transition-colors hover:bg-roma-stone/40"
+            className="cursor-pointer bg-stone-light/20 px-4 py-2 text-stone-light transition-colors hover:bg-stone-light/40"
           >
             Copy Link
           </button>
           <button
             onClick={handleLeave}
-            className="cursor-pointer rounded bg-roma-red/80 px-4 py-2 text-roma-white transition-colors hover:bg-roma-red"
+            className="cursor-pointer bg-crimson/80 px-4 py-2 text-parchment transition-colors hover:bg-crimson"
           >
             Leave Room
           </button>
@@ -218,10 +236,8 @@ export default function GameRoomPage() {
       </header>
 
       {gameState.status === "completed" && (
-        <div className="my-8 bg-roma-stone/10 p-6 rounded border border-roma-gold text-center flex flex-col items-center">
-          <h2 className="text-4xl font-cinzel text-roma-gold mb-4">
-            Game Over
-          </h2>
+        <div className="my-8 bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze text-center flex flex-col items-center">
+          <h2 className="text-4xl font-cinzel text-bronze mb-4">Game Over</h2>
 
           <p className="text-2xl mb-6">
             {gameState.winner === playerId ? "You Won!" : "You Lost!"}
@@ -235,7 +251,7 @@ export default function GameRoomPage() {
                 leaveRoom();
                 navigate("/");
               }}
-              className="border border-roma-stone text-roma-stone px-6 py-2 rounded"
+              className="border border-stone-light text-stone-light px-6 py-2"
             >
               Lobby
             </button>
@@ -245,7 +261,7 @@ export default function GameRoomPage() {
 
       {gameState.status === "waiting" && !myState.name && (
         <div className="text-center py-20">
-          <h2 className="text-4xl font-cinzel text-roma-stone mb-4">
+          <h2 className="text-4xl font-cinzel text-stone-light mb-4">
             Waiting for Opponent...
           </h2>
           <p className="text-xl">Share the room code: {gameState.roomCode}</p>
@@ -257,13 +273,13 @@ export default function GameRoomPage() {
         gameState.status === "completed" ||
         (gameState.status === "waiting" && myState.name)) && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-roma-stone/10 p-6 rounded border border-roma-gold/30">
-            <h3 className="text-xl font-cinzel text-roma-gold mb-2">
+          <div className="bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze/30">
+            <h3 className="text-xl font-cinzel text-bronze mb-2">
               {myState.name} (You)
             </h3>
             <div
-              className={`mb-4 text-3xl font-nums tracking-widest text-center bg-roma-black p-4 rounded border transition-colors ${
-                myState.secret ? "border-roma-gold" : "border-roma-stone/30"
+              className={`mb-4 text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border transition-colors ${
+                myState.secret ? "border-bronze" : "border-bronze/30"
               }`}
             >
               {myState.secret || "????"}
@@ -273,10 +289,10 @@ export default function GameRoomPage() {
               {myState.guesses.map((g, i) => (
                 <div
                   key={i}
-                  className="flex justify-between bg-roma-black/50 p-2 rounded"
+                  className="flex justify-between bg-dark-stone/50 p-2"
                 >
                   <span className="font-nums tracking-wider">{g.code}</span>
-                  <span className="text-roma-sand">
+                  <span className="text-stone-light">
                     {g.bulls}B {g.cows}C
                   </span>
                 </div>
@@ -287,9 +303,9 @@ export default function GameRoomPage() {
               <>
                 <div className="h-10 text-center mb-2">
                   {inputError ? (
-                    <p className="text-roma-red">{inputError}</p>
+                    <p className="text-crimson">{inputError}</p>
                   ) : (
-                    <p className="text-roma-sand">{getStatusMessage()}</p>
+                    <p className="text-stone-light">{getStatusMessage()}</p>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -301,10 +317,10 @@ export default function GameRoomPage() {
                       setInput(e.target.value.replace(/\D/g, ""))
                     }
                     placeholder={!myState.secret ? "Set Secret" : "Enter Guess"}
-                    className={`flex-1 bg-roma-black border p-2 rounded text-white text-center font-nums tracking-widest ${
+                    className={`flex-1 bg-input-bg border p-2 text-parchment text-center font-nums tracking-widest ${
                       inputError
-                        ? "border-roma-red"
-                        : "border-roma-stone focus:border-roma-gold"
+                        ? "border-crimson"
+                        : "border-bronze/50 focus:border-bronze"
                     }`}
                     disabled={
                       !!myState.secret &&
@@ -318,7 +334,7 @@ export default function GameRoomPage() {
                       (!!myState.secret &&
                         (gameState.status === "setup" || !isMyTurn))
                     }
-                    className="bg-roma-gold text-roma-black font-bold px-4 rounded disabled:opacity-50"
+                    className="bg-bronze text-dark-stone font-bold px-4 disabled:opacity-50"
                   >
                     Submit
                   </button>
@@ -327,11 +343,11 @@ export default function GameRoomPage() {
             )}
           </div>
 
-          <div className="bg-roma-stone/10 p-6 rounded border border-roma-stone/30 opacity-80">
-            <h3 className="text-xl font-cinzel text-roma-stone mb-2">
+          <div className="bg-dark-card/80 backdrop-blur-sm p-6 border border-bronze/30">
+            <h3 className="text-xl font-cinzel text-stone-light mb-2">
               {oppState.name || "Opponent"}
             </h3>
-            <div className="mb-4 text-3xl font-nums tracking-widest text-center bg-roma-black p-4 rounded border border-roma-stone/30 text-roma-stone">
+            <div className="mb-4 text-3xl font-nums tracking-widest text-center bg-dark-stone p-4 border border-bronze/30 text-stone-light">
               {gameState.status === "completed" ? oppState.secret : "????"}
             </div>
 
@@ -339,10 +355,10 @@ export default function GameRoomPage() {
               {oppState.guesses.map((g, i) => (
                 <div
                   key={i}
-                  className="flex justify-between bg-roma-black/50 p-2 rounded"
+                  className="flex justify-between bg-dark-stone/50 p-2"
                 >
                   <span className="font-nums tracking-wider">{g.code}</span>
-                  <span className="text-roma-sand">
+                  <span className="text-stone-light">
                     {g.bulls}B {g.cows}C
                   </span>
                 </div>

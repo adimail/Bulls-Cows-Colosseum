@@ -3,13 +3,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-roma-stone: #8a817c;
-  --color-roma-black: #2c2c2c;
-  --color-roma-white: #f0e9e0;
-  --color-roma-red: #8b1e2a;
-  --color-roma-gold: #d4af37;
-  --color-roma-bronze: #a9713f;
-  --color-roma-sand: #c5a46d;
+  /* Roman Dark Theme Palette */
+  --color-dark-stone: #211f1c; /* Main Background */
+  --color-dark-card: #2a2825; /* Card/Component Background */
+  --color-parchment: #f3e9d8; /* Primary Text */
+  --color-crimson: #9f2d2d; /* Primary Buttons & Strong Accents */
+  --color-stone-light: #9e9a94; /* Secondary Text */
+  --color-bronze: #d4af37; /* Titles & Highlights */
+  --color-input-bg: #33302c; /* Input Background */
 
   --font-cinzel: "Cinzel", serif;
   --font-roman: "Cormorant Garamond", serif;
@@ -23,7 +24,7 @@
   }
 
   body {
-    @apply bg-roma-black m-0 min-h-screen;
+    @apply bg-dark-stone m-0 min-h-screen;
   }
 }
 
@@ -39,14 +40,39 @@ button {
     width: 8px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: theme("colors.roma-stone / 10%");
-    border-radius: 4px;
+    background: theme("colors.stone-light / 10%");
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: theme("colors.roma-bronze / 50%");
-    border-radius: 4px;
+    background: theme("colors.bronze / 50%");
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: theme("colors.roma-bronze / 70%");
+    background: theme("colors.bronze / 70%");
+  }
+
+  .bg-image-overlay {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+
+  .bg-image-overlay::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(20, 18, 16, 0.8),
+      rgba(33, 31, 28, 0.9)
+    );
+    z-index: 1;
+  }
+
+  .bg-image-overlay > * {
+    position: relative;
+    z-index: 2;
   }
 }
