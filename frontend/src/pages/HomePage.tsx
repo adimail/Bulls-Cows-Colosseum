@@ -165,15 +165,15 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
           <div className="lg:col-span-7 space-y-12 sticky top-0">
-            <LegendaryCard className="p-8 md:p-10">
+            <LegendaryCard className="p-3 md:p-5">
               <h2 className="text-2xl font-cinzel text-amber-100 mb-8 flex items-center gap-3 border-b border-stone-800 pb-4">
                 <Swords className="text-crimson" /> Enter the Arena
               </h2>
-              <div className="space-y-8">
+              <div className="space-y-5">
                 <Link to="/create" className="block group">
                   <LegendaryButton
                     variant="crimson"
-                    className="text-lg py-5 w-full"
+                    className="md:text-lg md:py-4 px-0 w-full"
                   >
                     Create New Game
                   </LegendaryButton>
@@ -194,7 +194,7 @@ export default function HomePage() {
               </div>
             </LegendaryCard>
 
-            <LegendaryCard className="p-8 md:p-10 min-h-[400px]">
+            <LegendaryCard className="p-3 md:p-5">
               <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
                 <h2 className="text-xl md:text-2xl font-cinzel text-stone-300 flex items-center gap-3">
                   <Users className="text-amber-600" /> Public Lobby
@@ -262,8 +262,8 @@ export default function HomePage() {
           </div>
 
           <div className="lg:col-span-5">
-            <LegendaryCard className="p-8 md:p-10 h-full border-t-4 border-t-amber-700">
-              <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
+            <LegendaryCard className="p-3 md:p-5 h-full border-t-4 border-t-amber-700">
+              <div className="flex md:flex-row flex-col md:justify-between items-center mb-8 border-b border-stone-800 pb-4 gap-3 md:gap-0">
                 <h2 className="text-xl font-cinzel text-stone-300 flex items-center gap-3">
                   <Trophy className="text-yellow-500" /> Hall of Fame
                 </h2>

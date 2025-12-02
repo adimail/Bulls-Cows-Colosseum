@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "../stores/useGameStore";
-import BackToLobby from "../components/BackToLobby";
 import LegendaryCard from "../components/ui/LegendaryCard";
 import PlayerNameForm from "../components/forms/PlayerNameForm";
 
@@ -22,10 +21,6 @@ export default function CreateRoomPage() {
           "url(https://images.unsplash.com/photo-1714259184249-b3f85962cfda?q=80&w=2672&auto=format&fit=crop)",
       }}
     >
-      <BackToLobby />
-      <div className="pillar-side left-0 border-r border-stone-800"></div>
-      <div className="pillar-side right-0 border-l border-stone-800"></div>
-
       <div className="w-full max-w-lg">
         <LegendaryCard title="Create Room">
           <PlayerNameForm

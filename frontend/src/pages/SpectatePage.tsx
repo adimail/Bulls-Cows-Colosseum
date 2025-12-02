@@ -22,7 +22,6 @@ export default function SpectatePage() {
   if (error) {
     return (
       <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
-        <BackToLobby />
         <div className="w-full max-w-md card-legendary p-10 text-center">
           <h2 className="text-3xl font-cinzel text-crimson mb-4">
             Arena Not Found
@@ -60,7 +59,7 @@ export default function SpectatePage() {
       <header className="relative z-20 bg-black/80 backdrop-blur-md border-b border-yellow-900/30 p-4 flex justify-between items-center shadow-2xl">
         <div className="flex items-center gap-4">
           <BackToLobby />
-          <div className="ml-12 md:ml-0 pl-12 md:pl-0">
+          <div className="ml-1">
             <h1 className="text-xl md:text-2xl font-cinzel font-bold text-stone-300 flex items-center gap-2">
               <Eye className="text-amber-500" /> Spectating:{" "}
               {gameState.roomCode}
@@ -108,7 +107,7 @@ export default function SpectatePage() {
                 <div className="text-center mb-2 text-stone-500 font-cinzel text-xs uppercase tracking-widest">
                   Secret Code
                 </div>
-                <div className="text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-amber-900/30 text-amber-100">
+                <div className="text-xl md:text-3xl font-nums tracking-[0.5em] text-center md:py-5 py-3 bg-black/40 border-2 border-amber-900/30 text-amber-100">
                   {gameState.p1.secret || "Not Set"}
                 </div>
               </div>
@@ -149,7 +148,7 @@ export default function SpectatePage() {
                 <div className="text-center mb-2 text-stone-500 font-cinzel text-xs uppercase tracking-widest">
                   Secret Code
                 </div>
-                <div className="text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-stone-800 text-stone-600">
+                <div className="text-xl md:text-3xl font-nums tracking-[0.5em] text-center md:py-5 py-3 bg-black/40 border-2 border-stone-800 text-stone-600">
                   {gameState.p2.secret || "Not Set"}
                 </div>
               </div>

@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGameStore } from "../stores/useGameStore";
 import { BellRing, Copy, LogOut, Shield, Sword, Loader } from "lucide-react";
-import BackToLobby from "../components/BackToLobby";
 import LegendaryCard from "../components/ui/LegendaryCard";
 import LegendaryButton from "../components/ui/LegendaryButton";
 import PlayerNameForm from "../components/forms/PlayerNameForm";
@@ -90,8 +89,13 @@ export default function GameRoomPage() {
   if (!gameState) {
     if (globalError && !inputError) {
       return (
-        <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
-          <BackToLobby />
+        <div
+          className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 md:flex-row flex-col md:gap-0 gap-8"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1714259184249-b3f85962cfda?q=80&w=2672&auto=format&fit=crop)",
+          }}
+        >
           <LegendaryCard
             title="Access Denied"
             className="max-w-md w-full text-center"
@@ -116,7 +120,13 @@ export default function GameRoomPage() {
 
     if (fetchStatus === "error") {
       return (
-        <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
+        <div
+          className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 md:flex-row flex-col md:gap-0 gap-8"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1714259184249-b3f85962cfda?q=80&w=2672&auto=format&fit=crop)",
+          }}
+        >
           <LegendaryCard title="Error" className="max-w-md w-full text-center">
             <p className="text-lg mb-8 text-stone-300">
               There was an error retrieving room details.
@@ -131,8 +141,13 @@ export default function GameRoomPage() {
 
     if (!roomInfo.exists) {
       return (
-        <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
-          <BackToLobby />
+        <div
+          className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 md:flex-row flex-col md:gap-0 gap-8"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1714259184249-b3f85962cfda?q=80&w=2672&auto=format&fit=crop)",
+          }}
+        >
           <LegendaryCard
             title="Arena Not Found"
             className="max-w-md w-full text-center"
@@ -157,7 +172,6 @@ export default function GameRoomPage() {
             "url(https://images.unsplash.com/photo-1714259184249-b3f85962cfda?q=80&w=2672&auto=format&fit=crop)",
         }}
       >
-        <BackToLobby />
         <div className="w-full max-w-md">
           <LegendaryCard title={`Join ${roomInfo.ownerName}'s Room`}>
             <PlayerNameForm
@@ -278,8 +292,7 @@ export default function GameRoomPage() {
 
       <header className="relative z-20 bg-black/80 backdrop-blur-md border-b border-yellow-900/30 p-4 flex justify-between items-center shadow-2xl">
         <div className="flex items-center gap-4">
-          <BackToLobby />
-          <div className="ml-12 md:ml-0 pl-12 md:pl-0">
+          <div className="ml-1">
             <h1 className="text-xl md:text-2xl font-cinzel font-bold text-gold-gradient">
               Room: {gameState.roomCode}
             </h1>
@@ -381,7 +394,7 @@ export default function GameRoomPage() {
                       Secret Code
                     </div>
                     <div
-                      className={`text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 ${
+                      className={`text-xl md:text-3xl font-nums tracking-[0.5em] text-center md:py-5 py-3 bg-black/40 border-2 ${
                         myState.secret
                           ? "border-amber-700/50 text-amber-100 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]"
                           : "border-stone-800 text-stone-700 border-dashed"
@@ -452,7 +465,7 @@ export default function GameRoomPage() {
                     <div className="text-center mb-2 text-stone-500 font-cinzel text-xs uppercase tracking-widest">
                       Enemy Secret
                     </div>
-                    <div className="text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-stone-800 text-stone-600 shadow-inner">
+                    <div className="text-xl md:text-3xl font-nums tracking-[0.5em] text-center md:py-5 py-3 bg-black/40 border-2 border-stone-800 text-stone-600 shadow-inner">
                       {gameState.status === "completed"
                         ? oppState.secret
                         : "????"}
@@ -498,15 +511,15 @@ export default function GameRoomPage() {
       </main>
 
       {gameState.status !== "completed" && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-black via-black/95 to-transparent pt-12">
-          <div className="max-w-lg mx-auto">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-black via-black/95 to-transparent">
+          <div className="max-w-lg mx-auto fixed bottom-0 left-0 right-0 p-4">
             <div className="text-center mb-4 h-6">
               {inputError ? (
                 <p className="text-crimson font-cinzel font-bold animate-pulse">
                   {inputError}
                 </p>
               ) : (
-                <p className="text-stone-400 font-cinzel text-sm tracking-widest uppercase">
+                <p className="text-stone-400 font-cinzel md:text-sm text-xs tracking-widest uppercase">
                   {getStatusMessage()}
                 </p>
               )}
@@ -520,7 +533,7 @@ export default function GameRoomPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value.replace(/\D/g, ""))}
                   placeholder={!myState.secret ? "SET CODE" : "GUESS"}
-                  className={`w-full bg-stone-900 border-2 p-4 text-center font-nums text-2xl tracking-[0.5em] text-amber-100 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none transition-colors ${
+                  className={`w-full bg-stone-900 border-2 md:p-4 p-3 text-center font-nums md:text-2xl tracking-[0.5em] text-amber-100 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none transition-colors ${
                     inputError
                       ? "border-crimson"
                       : "border-stone-600 focus:border-amber-600"
@@ -543,7 +556,7 @@ export default function GameRoomPage() {
                   (!!myState.secret &&
                     (gameState.status === "setup" || !isMyTurn))
                 }
-                className="px-8 w-auto"
+                className="px-5 w-auto"
               >
                 {!myState.secret ? "Lock" : "Strike"}
               </LegendaryButton>

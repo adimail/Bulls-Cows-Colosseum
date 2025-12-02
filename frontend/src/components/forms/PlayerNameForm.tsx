@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import StoneInput from "../ui/StoneInput";
 import LegendaryButton from "../ui/LegendaryButton";
 
@@ -14,6 +15,7 @@ export default function PlayerNameForm({
   variant = "gold",
 }: PlayerNameFormProps) {
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +25,7 @@ export default function PlayerNameForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 w-full">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full">
       <StoneInput
         label="Gladiator Name"
         value={name}
@@ -40,6 +42,14 @@ export default function PlayerNameForm({
         disabled={!name.trim()}
       >
         {buttonText}
+      </LegendaryButton>
+      <LegendaryButton
+        type="button"
+        variant="gold"
+        className="w-full"
+        onClick={() => navigate("/")}
+      >
+        Return to Lobby
       </LegendaryButton>
     </form>
   );

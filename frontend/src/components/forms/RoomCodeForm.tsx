@@ -28,13 +28,13 @@ export default function RoomCodeForm({
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           maxLength={6}
           placeholder="ROOM CODE"
-          className="text-xl uppercase placeholder:text-stone-700"
+          className="text-xl uppercase placeholder:text-stone-700 p-2 md:p-3"
           containerClassName="flex-1"
         />
         <LegendaryButton
           onClick={handleSubmit}
           disabled={code.length !== 6}
-          className="px-10 w-full md:w-auto"
+          className="p-2 md:p-3 w-full md:w-auto md:px-10"
         >
           Join
         </LegendaryButton>
@@ -43,7 +43,7 @@ export default function RoomCodeForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 w-full">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full">
       <StoneInput
         label="Room Code"
         value={code}
