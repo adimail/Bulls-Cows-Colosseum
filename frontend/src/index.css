@@ -1,16 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:wght@400;600&family=Crimson+Pro:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Crimson+Pro:wght@400;700&display=swap");
 
 @import "tailwindcss";
 
 @theme {
-  /* Roman Dark Theme Palette */
-  --color-dark-stone: #211f1c; /* Main Background */
-  --color-dark-card: #2a2825; /* Card/Component Background */
-  --color-parchment: #f3e9d8; /* Primary Text */
-  --color-crimson: #9f2d2d; /* Primary Buttons & Strong Accents */
-  --color-stone-light: #9e9a94; /* Secondary Text */
-  --color-bronze: #d4af37; /* Titles & Highlights */
-  --color-input-bg: #33302c; /* Input Background */
+  --color-dark-stone: #0c0a09;
+  --color-dark-card: #1c1917;
+  --color-parchment: #e7e5e4;
+  --color-crimson: #7f1d1d;
+  --color-stone-light: #a8a29e;
+  --color-bronze: #d4af37;
+  --color-gold-light: #fcd34d;
+  --color-gold-dark: #78350f;
 
   --font-cinzel: "Cinzel", serif;
   --font-roman: "Cormorant Garamond", serif;
@@ -24,7 +24,9 @@
   }
 
   body {
-    @apply bg-dark-stone m-0 min-h-screen;
+    @apply bg-dark-stone m-0 min-h-screen text-parchment overflow-x-hidden;
+    background-image:
+      url("https://www.transparenttextures.com/patterns/black-scales.png")
   }
 }
 
@@ -32,21 +34,96 @@ button {
   cursor: pointer;
 }
 
-@layer utilities {
-  .clip-path-banner-bottom {
-    clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+@layer components {
+  .text-gold-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-amber-200 via-yellow-500 to-amber-700 drop-shadow-sm;
   }
+
+  .border-gold-gradient {
+    border-image: linear-gradient(to bottom, #fcd34d, #78350f) 1;
+  }
+
+  .card-legendary {
+    @apply bg-black/80 backdrop-blur-md border-2 border-yellow-900/30 shadow-[0_0_40px_rgba(0,0,0,0.8)] relative overflow-hidden;
+  }
+
+  .card-legendary::before {
+    content: "";
+    @apply absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-600 to-transparent opacity-50;
+  }
+
+  .card-legendary::after {
+    content: "";
+    @apply absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-600 to-transparent opacity-50;
+  }
+
+  .btn-legendary {
+    @apply relative px-8 py-3 font-cinzel font-bold tracking-[0.2em] text-amber-100 uppercase transition-all transform duration-200;
+    background: linear-gradient(to bottom, #292524, #1c1917);
+    border: 1px solid #44403c;
+    box-shadow:
+      0 4px 0 #0c0a09,
+      0 5px 10px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-legendary:hover {
+    @apply text-white brightness-110;
+    box-shadow:
+      0 4px 0 #0c0a09,
+      0 5px 20px rgba(212, 175, 55, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-legendary:active {
+    @apply translate-y-[4px];
+    box-shadow:
+      0 0 0 #0c0a09,
+      inset 0 2px 5px rgba(0, 0, 0, 0.5);
+  }
+
+  .btn-legendary:disabled {
+    @apply opacity-50 cursor-not-allowed grayscale;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-crimson {
+    background: linear-gradient(to bottom, #7f1d1d, #450a0a);
+    border-color: #991b1b;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .btn-gold {
+    background: linear-gradient(to bottom, #b45309, #78350f);
+    border-color: #d97706;
+    @apply text-amber-50;
+  }
+
+  .input-stone {
+    @apply w-full bg-stone-900/50 border-2 border-stone-700 p-4 text-amber-100 font-cinzel text-lg focus:border-yellow-600/50 focus:bg-stone-900/80 outline-none transition-all placeholder:text-stone-600 text-center tracking-widest shadow-inner;
+  }
+
+  .pillar-side {
+    @apply hidden xl:block fixed top-0 bottom-0 w-16 bg-repeat-y z-0 opacity-30 pointer-events-none;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='100' viewBox='0 0 60 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 0v100M50 0v100' stroke='%2344403c' stroke-width='2'/%3E%3Cpath d='M15 0v100M45 0v100' stroke='%23292524' stroke-width='1'/%3E%3C/svg%3E");
+    box-shadow: inset 0 0 20px #000;
+  }
+}
+
+@layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: theme("colors.stone-light / 10%");
+    background: rgba(0, 0, 0, 0.3);
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: theme("colors.bronze / 50%");
+    background: linear-gradient(to bottom, #78350f, #b45309);
+    border-radius: 3px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: theme("colors.bronze / 70%");
+    background: #d97706;
   }
 
   .bg-image-overlay {
@@ -63,10 +140,10 @@ button {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      to bottom,
-      rgba(20, 18, 16, 0.8),
-      rgba(33, 31, 28, 0.9)
+    background: radial-gradient(
+      circle at center,
+      rgba(12, 10, 9, 0.4),
+      rgba(12, 10, 9, 0.95)
     );
     z-index: 1;
   }
@@ -74,5 +151,9 @@ button {
   .bg-image-overlay > * {
     position: relative;
     z-index: 2;
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
   }
 }
