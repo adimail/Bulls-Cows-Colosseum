@@ -1,0 +1,18 @@
+# .htaccess for Go App with WebSockets
+RewriteEngine On
+
+# Rule to proxy WebSocket connections to the Go backend
+RewriteCond %{HTTP:Upgrade} =websocket [NC]
+RewriteRule ^ws/?(.*)$ ws://127.0.0.1:8080/ws/$1 [P,L]
+
+# Rule to proxy API requests to the Go backend
+# This forwards any request starting with /api/ to your Go application.
+RewriteRule ^api/(.*)$ http://127.0.0.1:8080/api/$1 [P,L]
+
+# --- SPA Routing ---
+# If the request is not for an existing file...
+RewriteCond %{REQUEST_FILENAME} !-f
+# ...and not for an existing directory...
+RewriteCond %{REQUEST_FILENAME} !-d
+# ...then rewrite the request to the main index.html of your app.
+RewriteRule ^(.*)$ /dist/index.html [L]
