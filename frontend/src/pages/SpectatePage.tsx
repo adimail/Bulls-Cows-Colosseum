@@ -85,7 +85,7 @@ export default function SpectatePage() {
       <main className="flex-grow relative z-10 p-4 md:p-8 overflow-y-auto custom-scrollbar">
         {gameState.status === "completed" && (
           <div className="text-center mb-8 animate-in zoom-in duration-500">
-            <h2 className="text-4xl md:text-6xl font-cinzel font-black text-gold-gradient drop-shadow-lg">
+            <h2 className="text-4xl md:text-5xl font-cinzel font-black text-gold-gradient drop-shadow-lg">
               VICTOR:{" "}
               {gameState.winner === "p1"
                 ? gameState.p1.name
@@ -108,7 +108,7 @@ export default function SpectatePage() {
                 <div className="text-center mb-2 text-stone-500 font-cinzel text-xs uppercase tracking-widest">
                   Secret Code
                 </div>
-                <div className="text-4xl md:text-5xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-amber-900/30 text-amber-100">
+                <div className="text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-amber-900/30 text-amber-100">
                   {gameState.p1.secret || "Not Set"}
                 </div>
               </div>
@@ -149,7 +149,7 @@ export default function SpectatePage() {
                 <div className="text-center mb-2 text-stone-500 font-cinzel text-xs uppercase tracking-widest">
                   Secret Code
                 </div>
-                <div className="text-4xl md:text-5xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-stone-800 text-stone-600">
+                <div className="text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-stone-800 text-stone-600">
                   {gameState.p2.secret || "Not Set"}
                 </div>
               </div>

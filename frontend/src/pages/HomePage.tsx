@@ -102,7 +102,7 @@ export default function HomePage() {
       className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 text-center"
       style={{
         backgroundImage:
-          "url(https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?q=80&w=2574&auto=format&fit=crop)",
+          "url(https://images.unsplash.com/photo-1746558071199-ec38d4eb8bbd?q=80&w=1287&auto=format&fit=crop)",
       }}
     >
       <LegendaryCard className="max-w-2xl">
@@ -146,7 +146,7 @@ export default function HomePage() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
         <header className="mb-16 text-center relative">
           <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-yellow-900/50 to-transparent -z-10"></div>
-          <h1 className="text-5xl md:text-8xl font-cinzel font-black text-gold-gradient mb-4 tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
+          <h1 className="text-5xl md:text-7xl font-cinzel font-black text-gold-gradient mb-4 tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
             COLOSSEUM
           </h1>
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-stone-400 font-cinzel tracking-widest text-sm md:text-base uppercase">
@@ -166,12 +166,15 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
           <div className="lg:col-span-7 space-y-12 sticky top-0">
             <LegendaryCard className="p-8 md:p-10">
-              <h2 className="text-3xl font-cinzel text-amber-100 mb-8 flex items-center gap-3 border-b border-stone-800 pb-4">
+              <h2 className="text-2xl font-cinzel text-amber-100 mb-8 flex items-center gap-3 border-b border-stone-800 pb-4">
                 <Swords className="text-crimson" /> Enter the Arena
               </h2>
               <div className="space-y-8">
                 <Link to="/create" className="block group">
-                  <LegendaryButton variant="crimson" className="text-xl py-6">
+                  <LegendaryButton
+                    variant="crimson"
+                    className="text-lg py-5 w-full"
+                  >
                     Create New Game
                   </LegendaryButton>
                 </Link>
@@ -193,7 +196,7 @@ export default function HomePage() {
 
             <LegendaryCard className="p-8 md:p-10 min-h-[400px]">
               <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
-                <h2 className="text-2xl md:text-3xl font-cinzel text-stone-300 flex items-center gap-3">
+                <h2 className="text-xl md:text-2xl font-cinzel text-stone-300 flex items-center gap-3">
                   <Users className="text-amber-600" /> Public Lobby
                 </h2>
                 <button
@@ -261,7 +264,7 @@ export default function HomePage() {
           <div className="lg:col-span-5">
             <LegendaryCard className="p-8 md:p-10 h-full border-t-4 border-t-amber-700">
               <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
-                <h2 className="text-2xl font-cinzel text-stone-300 flex items-center gap-3">
+                <h2 className="text-xl font-cinzel text-stone-300 flex items-center gap-3">
                   <Trophy className="text-yellow-500" /> Hall of Fame
                 </h2>
                 <div className="flex items-center gap-3">

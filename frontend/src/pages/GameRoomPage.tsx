@@ -26,11 +26,13 @@ export default function GameRoomPage() {
   const [inputError, setInputError] = useState<string | null>(null);
   const [canPoke, setCanPoke] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [fetchStatus, setFetchStatus] = useState<
+    "loading" | "error" | "success"
+  >("loading");
   const [roomInfo, setRoomInfo] = useState<{
-    checked: boolean;
     exists: boolean;
     ownerName: string;
-  }>({ checked: false, exists: false, ownerName: "" });
+  }>({ exists: false, ownerName: "" });
 
   useEffect(() => {
     if (globalError) {
@@ -47,23 +49,28 @@ export default function GameRoomPage() {
     if (gameState) return;
     if (!gameId) return;
 
+    setFetchStatus("loading");
+
     fetch(`/api/room/${gameId}`)
       .then(async (res) => {
         if (res.status === 404) {
-          setRoomInfo({ checked: true, exists: false, ownerName: "" });
+          setRoomInfo({ exists: false, ownerName: "" });
+          setFetchStatus("success");
           return;
         }
         if (res.ok) {
           const data = await res.json();
           setRoomInfo({
-            checked: true,
             exists: true,
             ownerName: data.ownerName,
           });
+          setFetchStatus("success");
+        } else {
+          setFetchStatus("error");
         }
       })
       .catch(() => {
-        setRoomInfo({ checked: true, exists: false, ownerName: "" });
+        setFetchStatus("error");
       });
   }, [gameId, gameState]);
 
@@ -98,11 +105,26 @@ export default function GameRoomPage() {
       );
     }
 
-    if (!roomInfo.checked) {
+    if (fetchStatus === "loading") {
       return (
         <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4 text-parchment">
           <Loader className="w-12 h-12 animate-spin text-amber-500 mb-4" />
           <p className="font-cinzel text-xl">Consulting the oracles...</p>
+        </div>
+      );
+    }
+
+    if (fetchStatus === "error") {
+      return (
+        <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
+          <LegendaryCard title="Error" className="max-w-md w-full text-center">
+            <p className="text-lg mb-8 text-stone-300">
+              There was an error retrieving room details.
+            </p>
+            <LegendaryButton onClick={() => navigate("/")}>
+              Return to Lobby
+            </LegendaryButton>
+          </LegendaryCard>
         </div>
       );
     }
@@ -291,7 +313,7 @@ export default function GameRoomPage() {
         {gameState.status === "completed" && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
             <LegendaryCard className="text-center max-w-lg w-full">
-              <h2 className="text-5xl md:text-6xl font-cinzel font-black text-gold-gradient mb-2 drop-shadow-lg">
+              <h2 className="text-4xl md:text-5xl font-cinzel font-black text-gold-gradient mb-2 drop-shadow-lg">
                 {gameState.winner === playerId ? "VICTORY" : "DEFEAT"}
               </h2>
               <p className="text-xl text-stone-300 font-roman italic mb-8">
@@ -319,13 +341,13 @@ export default function GameRoomPage() {
         {gameState.status === "waiting" && !myState.name && (
           <div className="flex flex-col items-center justify-center h-full text-center">
             <LegendaryCard className="max-w-2xl">
-              <h2 className="text-4xl font-cinzel text-stone-300 mb-6">
+              <h2 className="text-3xl font-cinzel text-stone-300 mb-6">
                 Awaiting Challenger
               </h2>
               <p className="text-xl text-stone-400 mb-8">
                 Share this code to summon an opponent:
               </p>
-              <div className="text-6xl font-cinzel font-bold text-gold-gradient tracking-[0.5em] mb-8 bg-black/30 p-6 rounded border border-stone-800">
+              <div className="text-5xl font-cinzel font-bold text-gold-gradient tracking-[0.5em] mb-8 bg-black/30 p-6 rounded border border-stone-800">
                 {gameState.roomCode}
               </div>
               <div className="animate-pulse text-stone-600 font-cinzel text-sm uppercase tracking-widest">
@@ -359,7 +381,7 @@ export default function GameRoomPage() {
                       Secret Code
                     </div>
                     <div
-                      className={`text-4xl md:text-5xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 ${
+                      className={`text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 ${
                         myState.secret
                           ? "border-amber-700/50 text-amber-100 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]"
                           : "border-stone-800 text-stone-700 border-dashed"
@@ -430,7 +452,7 @@ export default function GameRoomPage() {
                     <div className="text-center mb-2 text-stone-500 font-cinzel text-xs uppercase tracking-widest">
                       Enemy Secret
                     </div>
-                    <div className="text-4xl md:text-5xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-stone-800 text-stone-600 shadow-inner">
+                    <div className="text-3xl md:text-4xl font-nums tracking-[0.5em] text-center py-6 bg-black/40 border-2 border-stone-800 text-stone-600 shadow-inner">
                       {gameState.status === "completed"
                         ? oppState.secret
                         : "????"}
@@ -498,7 +520,7 @@ export default function GameRoomPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value.replace(/\D/g, ""))}
                   placeholder={!myState.secret ? "SET CODE" : "GUESS"}
-                  className={`w-full bg-stone-900 border-2 p-4 text-center font-nums text-3xl tracking-[0.5em] text-amber-100 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none transition-colors ${
+                  className={`w-full bg-stone-900 border-2 p-4 text-center font-nums text-2xl tracking-[0.5em] text-amber-100 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] outline-none transition-colors ${
                     inputError
                       ? "border-crimson"
                       : "border-stone-600 focus:border-amber-600"

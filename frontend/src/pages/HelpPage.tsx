@@ -16,7 +16,7 @@ export default function HelpPage() {
         <BackToLobby />
 
         <header className="mb-12 text-center mt-12">
-          <h1 className="text-4xl md:text-6xl font-cinzel font-bold text-gold-gradient mb-4 drop-shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-gold-gradient mb-4 drop-shadow-lg">
             Rules of Engagement
           </h1>
           <div className="h-1 w-32 bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto"></div>
@@ -24,10 +24,10 @@ export default function HelpPage() {
 
         <div className="card-legendary p-8 md:p-12 space-y-12">
           <section>
-            <h2 className="text-2xl md:text-3xl font-cinzel text-amber-500 mb-6 border-b border-stone-800 pb-2">
+            <h2 className="text-xl md:text-2xl font-cinzel text-amber-500 mb-6 border-b border-stone-800 pb-2">
               I. The Objective
             </h2>
-            <p className="text-xl text-stone-300 leading-relaxed">
+            <p className="text-lg text-stone-300 leading-relaxed">
               You must decipher your opponent's secret 4-digit code before they
               decipher yours. The code consists of four{" "}
               <strong className="text-amber-100">unique digits</strong>.
@@ -35,15 +35,15 @@ export default function HelpPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl md:text-3xl font-cinzel text-amber-500 mb-6 border-b border-stone-800 pb-2">
+            <h2 className="text-xl md:text-2xl font-cinzel text-amber-500 mb-6 border-b border-stone-800 pb-2">
               II. The Feedback
             </h2>
-            <p className="text-lg text-stone-300 mb-4">
+            <p className="text-base text-stone-300 mb-4">
               After every strike (guess), the gods will grant you insight:
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-stone-900/50 p-6 border border-amber-900/30">
-                <h3 className="text-xl font-cinzel font-bold text-amber-500 mb-2">
+                <h3 className="text-lg font-cinzel font-bold text-amber-500 mb-2">
                   BULL (B)
                 </h3>
                 <p className="text-stone-400">
@@ -56,7 +56,7 @@ export default function HelpPage() {
                 </p>
               </div>
               <div className="bg-stone-900/50 p-6 border border-stone-800">
-                <h3 className="text-xl font-cinzel font-bold text-stone-400 mb-2">
+                <h3 className="text-lg font-cinzel font-bold text-stone-400 mb-2">
                   COW (C)
                 </h3>
                 <p className="text-stone-400">
@@ -72,10 +72,10 @@ export default function HelpPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl md:text-3xl font-cinzel text-amber-500 mb-6 border-b border-stone-800 pb-2">
+            <h2 className="text-xl md:text-2xl font-cinzel text-amber-500 mb-6 border-b border-stone-800 pb-2">
               III. Example
             </h2>
-            <div className="bg-black/40 p-6 border border-stone-800 font-mono text-lg">
+            <div className="bg-black/40 p-6 border border-stone-800 font-mono text-base">
               <p className="mb-2">
                 Enemy Secret: <span className="text-amber-500">1234</span>
               </p>

@@ -29,7 +29,7 @@ export default function PlayerNameForm({
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="MAXIMUS"
-        className="text-2xl"
+        className="text-xl"
         autoFocus
         required
       />

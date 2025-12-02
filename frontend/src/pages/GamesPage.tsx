@@ -46,7 +46,7 @@ export default function GamesPage() {
         <BackToLobby />
 
         <header className="mb-12 text-center mt-12">
-          <h1 className="text-4xl md:text-6xl font-cinzel font-bold text-gold-gradient mb-4 drop-shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-cinzel font-bold text-gold-gradient mb-4 drop-shadow-lg">
             The Archives
           </h1>
           <p className="text-stone-400 font-cinzel tracking-widest uppercase text-sm">
@@ -56,7 +56,7 @@ export default function GamesPage() {
 
         <div className="card-legendary p-8 md:p-12">
           <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
-            <h2 className="text-2xl md:text-3xl font-cinzel text-stone-300 flex items-center gap-3">
+            <h2 className="text-xl md:text-2xl font-cinzel text-stone-300 flex items-center gap-3">
               <Trophy className="text-amber-500" /> Recorded Battles
             </h2>
             <button
@@ -90,7 +90,7 @@ export default function GamesPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="text-lg">
+                <tbody className="text-base">
                   {history.map((game, index) => (
                     <tr
                       key={index}

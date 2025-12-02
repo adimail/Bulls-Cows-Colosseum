@@ -28,7 +28,7 @@ export default function RoomCodeForm({
           onChange={(e) => setCode(e.target.value.toUpperCase())}
           maxLength={6}
           placeholder="ROOM CODE"
-          className="text-2xl uppercase placeholder:text-stone-700"
+          className="text-xl uppercase placeholder:text-stone-700"
           containerClassName="flex-1"
         />
         <LegendaryButton
@@ -50,7 +50,7 @@ export default function RoomCodeForm({
         onChange={(e) => setCode(e.target.value.toUpperCase())}
         maxLength={6}
         placeholder="XY12Z3"
-        className="text-3xl uppercase tracking-[0.5em]"
+        className="text-2xl uppercase tracking-[0.5em]"
         autoFocus
         required
       />
