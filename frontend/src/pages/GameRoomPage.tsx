@@ -1,8 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGameStore } from "../stores/useGameStore";
-import { BellRing, Copy, LogOut, Shield, Sword } from "lucide-react";
+import { BellRing, Copy, LogOut, Shield, Sword, Loader } from "lucide-react";
 import BackToLobby from "../components/BackToLobby";
+import LegendaryCard from "../components/ui/LegendaryCard";
+import LegendaryButton from "../components/ui/LegendaryButton";
+import PlayerNameForm from "../components/forms/PlayerNameForm";
 
 export default function GameRoomPage() {
   const { gameId } = useParams();
@@ -20,10 +23,14 @@ export default function GameRoomPage() {
     pokeOpponent,
   } = useGameStore();
   const [input, setInput] = useState("");
-  const [playerName, setPlayerName] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
   const [canPoke, setCanPoke] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [roomInfo, setRoomInfo] = useState<{
+    checked: boolean;
+    exists: boolean;
+    ownerName: string;
+  }>({ checked: false, exists: false, ownerName: "" });
 
   useEffect(() => {
     if (globalError) {
@@ -37,16 +44,34 @@ export default function GameRoomPage() {
   }, [globalError, clearError]);
 
   useEffect(() => {
+    if (gameState) return;
+    if (!gameId) return;
+
+    fetch(`/api/room/${gameId}`)
+      .then(async (res) => {
+        if (res.status === 404) {
+          setRoomInfo({ checked: true, exists: false, ownerName: "" });
+          return;
+        }
+        if (res.ok) {
+          const data = await res.json();
+          setRoomInfo({
+            checked: true,
+            exists: true,
+            ownerName: data.ownerName,
+          });
+        }
+      })
+      .catch(() => {
+        setRoomInfo({ checked: true, exists: false, ownerName: "" });
+      });
+  }, [gameId, gameState]);
+
+  useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [gameState?.p1.guesses, gameState?.p2.guesses]);
-
-  const handleJoinClick = () => {
-    if (playerName.trim() && gameId) {
-      joinRoom(playerName.trim(), gameId);
-    }
-  };
 
   const handlePoke = () => {
     if (!canPoke) return;
@@ -60,18 +85,44 @@ export default function GameRoomPage() {
       return (
         <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
           <BackToLobby />
-          <div className="w-full max-w-md card-legendary p-10 text-center">
-            <h2 className="text-3xl font-cinzel text-crimson mb-4">
-              Access Denied
-            </h2>
+          <LegendaryCard
+            title="Access Denied"
+            className="max-w-md w-full text-center"
+          >
             <p className="text-lg mb-8 text-stone-300">{globalError}</p>
-            <button
-              onClick={() => navigate("/")}
-              className="w-full btn-legendary btn-gold"
-            >
+            <LegendaryButton onClick={() => navigate("/")}>
               Return to Lobby
-            </button>
-          </div>
+            </LegendaryButton>
+          </LegendaryCard>
+        </div>
+      );
+    }
+
+    if (!roomInfo.checked) {
+      return (
+        <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4 text-parchment">
+          <Loader className="w-12 h-12 animate-spin text-amber-500 mb-4" />
+          <p className="font-cinzel text-xl">Consulting the oracles...</p>
+        </div>
+      );
+    }
+
+    if (!roomInfo.exists) {
+      return (
+        <div className="min-h-screen bg-image-overlay flex flex-col items-center justify-center p-4">
+          <BackToLobby />
+          <LegendaryCard
+            title="Arena Not Found"
+            className="max-w-md w-full text-center"
+          >
+            <p className="text-lg mb-8 text-stone-300">
+              The room <strong className="text-amber-500">{gameId}</strong> does
+              not exist.
+            </p>
+            <LegendaryButton onClick={() => navigate("/")}>
+              Return to Lobby
+            </LegendaryButton>
+          </LegendaryCard>
         </div>
       );
     }
@@ -85,32 +136,13 @@ export default function GameRoomPage() {
         }}
       >
         <BackToLobby />
-        <div className="card-legendary p-10 w-full max-w-md">
-          <h2 className="text-3xl font-cinzel text-gold-gradient mb-8 text-center">
-            Join The Fray
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <label className="block text-stone-500 font-cinzel text-xs uppercase tracking-widest mb-2">
-                Gladiator Name
-              </label>
-              <input
-                type="text"
-                placeholder="NAME"
-                className="input-stone text-2xl"
-                value={playerName}
-                onChange={(e) => setPlayerName(e.target.value)}
-                autoFocus
-              />
-            </div>
-            <button
-              onClick={handleJoinClick}
-              className="w-full btn-legendary btn-gold"
-              disabled={!playerName}
-            >
-              Enter Arena
-            </button>
-          </div>
+        <div className="w-full max-w-md">
+          <LegendaryCard title={`Join ${roomInfo.ownerName}'s Room`}>
+            <PlayerNameForm
+              onSubmit={(name) => gameId && joinRoom(name, gameId)}
+              buttonText="Enter Arena"
+            />
+          </LegendaryCard>
         </div>
       </div>
     );
@@ -182,16 +214,14 @@ export default function GameRoomPage() {
   const renderRematchControls = () => {
     if (!myState.isReady && !oppState.isReady) {
       return (
-        <button onClick={restartGame} className="btn-legendary btn-gold w-full">
-          Challenge Again
-        </button>
+        <LegendaryButton onClick={restartGame}>Challenge Again</LegendaryButton>
       );
     }
     if (myState.isReady && !oppState.isReady) {
       return (
-        <button disabled className="btn-legendary w-full opacity-70">
+        <LegendaryButton disabled className="opacity-70">
           Awaiting Opponent...
-        </button>
+        </LegendaryButton>
       );
     }
     if (!myState.isReady && oppState.isReady) {
@@ -200,19 +230,16 @@ export default function GameRoomPage() {
           <p className="text-stone-400 italic text-center">
             {oppState.name} demands a rematch!
           </p>
-          <button
-            onClick={restartGame}
-            className="btn-legendary btn-gold w-full"
-          >
+          <LegendaryButton onClick={restartGame}>
             Accept Challenge
-          </button>
+          </LegendaryButton>
         </div>
       );
     }
     return (
-      <button disabled className="btn-legendary w-full opacity-70">
+      <LegendaryButton disabled className="opacity-70">
         Preparing Arena...
-      </button>
+      </LegendaryButton>
     );
   };
 
@@ -227,7 +254,6 @@ export default function GameRoomPage() {
       <div className="pillar-side left-0 border-r border-stone-800"></div>
       <div className="pillar-side right-0 border-l border-stone-800"></div>
 
-      {/* Header */}
       <header className="relative z-20 bg-black/80 backdrop-blur-md border-b border-yellow-900/30 p-4 flex justify-between items-center shadow-2xl">
         <div className="flex items-center gap-4">
           <BackToLobby />
@@ -261,11 +287,10 @@ export default function GameRoomPage() {
         </div>
       </header>
 
-      {/* Main Arena */}
       <main className="flex-grow relative z-10 p-4 md:p-8 overflow-y-auto custom-scrollbar pb-40">
         {gameState.status === "completed" && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="card-legendary p-12 text-center max-w-lg w-full animate-in zoom-in duration-300">
+            <LegendaryCard className="text-center max-w-lg w-full">
               <h2 className="text-5xl md:text-6xl font-cinzel font-black text-gold-gradient mb-2 drop-shadow-lg">
                 {gameState.winner === playerId ? "VICTORY" : "DEFEAT"}
               </h2>
@@ -287,13 +312,13 @@ export default function GameRoomPage() {
                   Return to Lobby
                 </button>
               </div>
-            </div>
+            </LegendaryCard>
           </div>
         )}
 
         {gameState.status === "waiting" && !myState.name && (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="card-legendary p-12 max-w-2xl">
+            <LegendaryCard className="max-w-2xl">
               <h2 className="text-4xl font-cinzel text-stone-300 mb-6">
                 Awaiting Challenger
               </h2>
@@ -306,7 +331,7 @@ export default function GameRoomPage() {
               <div className="animate-pulse text-stone-600 font-cinzel text-sm uppercase tracking-widest">
                 The crowd is getting restless...
               </div>
-            </div>
+            </LegendaryCard>
           </div>
         )}
 
@@ -315,7 +340,6 @@ export default function GameRoomPage() {
           gameState.status === "completed" ||
           (gameState.status === "waiting" && myState.name)) && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto h-full">
-            {/* My Board */}
             <div className="flex flex-col h-full">
               <div className="card-legendary flex-grow flex flex-col p-1">
                 <div className="bg-stone-900/90 flex-grow p-4 md:p-6 flex flex-col border border-stone-800">
@@ -383,7 +407,6 @@ export default function GameRoomPage() {
               </div>
             </div>
 
-            {/* Opponent Board */}
             <div className="flex flex-col h-full">
               <div className="card-legendary flex-grow flex flex-col p-1 border-stone-700">
                 <div className="bg-stone-900/90 flex-grow p-4 md:p-6 flex flex-col border border-stone-800">
@@ -452,7 +475,6 @@ export default function GameRoomPage() {
         )}
       </main>
 
-      {/* Input Control Deck */}
       {gameState.status !== "completed" && (
         <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-gradient-to-t from-black via-black/95 to-transparent pt-12">
           <div className="max-w-lg mx-auto">
@@ -486,24 +508,23 @@ export default function GameRoomPage() {
                     (gameState.status === "setup" || !isMyTurn)
                   }
                 />
-                {/* Decorative corners for input */}
                 <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-amber-700 pointer-events-none"></div>
                 <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-amber-700 pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-amber-700 pointer-events-none"></div>
                 <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-amber-700 pointer-events-none"></div>
               </div>
 
-              <button
+              <LegendaryButton
                 type="submit"
                 disabled={
                   input.length !== 4 ||
                   (!!myState.secret &&
                     (gameState.status === "setup" || !isMyTurn))
                 }
-                className="btn-legendary btn-gold px-8"
+                className="px-8 w-auto"
               >
                 {!myState.secret ? "Lock" : "Strike"}
-              </button>
+              </LegendaryButton>
             </form>
           </div>
         </div>

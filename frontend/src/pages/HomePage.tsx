@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { RefreshCw, Swords, Scroll, Trophy, Users } from "lucide-react";
+import RoomCodeForm from "../components/forms/RoomCodeForm";
+import LegendaryCard from "../components/ui/LegendaryCard";
+import LegendaryButton from "../components/ui/LegendaryButton";
 
 interface RoomInfo {
   roomCode: string;
@@ -20,10 +23,8 @@ interface GameHistory {
 export default function HomePage() {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [history, setHistory] = useState<GameHistory[]>([]);
-  const [joinCode, setJoinCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const navigate = useNavigate();
   const [serverStatus, setServerStatus] = useState<
     "checking" | "online" | "offline"
   >("checking");
@@ -90,12 +91,6 @@ export default function HomePage() {
     }
   }, [serverStatus]);
 
-  const handleJoin = () => {
-    if (joinCode.length === 6) {
-      navigate(`/room/${joinCode}`);
-    }
-  };
-
   const StatusScreen = ({
     title,
     message,
@@ -110,12 +105,12 @@ export default function HomePage() {
           "url(https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?q=80&w=2574&auto=format&fit=crop)",
       }}
     >
-      <div className="card-legendary p-12 max-w-2xl">
+      <LegendaryCard className="max-w-2xl">
         <h1 className="text-4xl md:text-5xl font-cinzel text-gold-gradient mb-6 drop-shadow-lg">
           {title}
         </h1>
         <p className="text-xl text-stone-300 font-roman italic">{message}</p>
-      </div>
+      </LegendaryCard>
     </div>
   );
 
@@ -170,15 +165,15 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
           <div className="lg:col-span-7 space-y-12 sticky top-0">
-            <section className="card-legendary p-8 md:p-10">
+            <LegendaryCard className="p-8 md:p-10">
               <h2 className="text-3xl font-cinzel text-amber-100 mb-8 flex items-center gap-3 border-b border-stone-800 pb-4">
                 <Swords className="text-crimson" /> Enter the Arena
               </h2>
               <div className="space-y-8">
                 <Link to="/create" className="block group">
-                  <button className="w-full btn-legendary btn-crimson text-xl py-6">
+                  <LegendaryButton variant="crimson" className="text-xl py-6">
                     Create New Game
-                  </button>
+                  </LegendaryButton>
                 </Link>
 
                 <div className="relative">
@@ -192,27 +187,11 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-4">
-                  <input
-                    type="text"
-                    placeholder="ROOM CODE"
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                    maxLength={6}
-                    className="flex-1 input-stone text-2xl uppercase placeholder:text-stone-700"
-                  />
-                  <button
-                    onClick={handleJoin}
-                    disabled={joinCode.length !== 6}
-                    className="btn-legendary btn-gold px-10"
-                  >
-                    Join
-                  </button>
-                </div>
+                <RoomCodeForm variant="inline" />
               </div>
-            </section>
+            </LegendaryCard>
 
-            <section className="card-legendary p-8 md:p-10 min-h-[400px]">
+            <LegendaryCard className="p-8 md:p-10 min-h-[400px]">
               <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
                 <h2 className="text-2xl md:text-3xl font-cinzel text-stone-300 flex items-center gap-3">
                   <Users className="text-amber-600" /> Public Lobby
@@ -276,11 +255,11 @@ export default function HomePage() {
                   ))
                 )}
               </div>
-            </section>
+            </LegendaryCard>
           </div>
 
           <div className="lg:col-span-5">
-            <div className="card-legendary p-8 md:p-10 h-full border-t-4 border-t-amber-700">
+            <LegendaryCard className="p-8 md:p-10 h-full border-t-4 border-t-amber-700">
               <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
                 <h2 className="text-2xl font-cinzel text-stone-300 flex items-center gap-3">
                   <Trophy className="text-yellow-500" /> Hall of Fame
@@ -356,7 +335,7 @@ export default function HomePage() {
                   </table>
                 )}
               </div>
-            </div>
+            </LegendaryCard>
           </div>
         </div>
       </div>
