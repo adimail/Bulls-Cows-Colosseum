@@ -15,6 +15,7 @@ import (
 func (s *Server) routes() {
 	s.Router.HandleFunc("/api/health", s.handleHealthCheck)
 	s.Router.HandleFunc("/api/rooms", RateLimitMiddleware(s.handleGetRooms))
+	s.Router.HandleFunc("/api/room/", RateLimitMiddleware(s.handleGetRoom))
 	s.Router.HandleFunc("/api/games", RateLimitMiddleware(s.handleGetGames))
 	s.Router.HandleFunc("/ws", RateLimitMiddleware(s.handleWebSocket))
 
@@ -98,6 +99,36 @@ func (s *Server) handleGetRooms(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(roomsList); err != nil {
 		http.Error(w, "Failed to encode rooms", http.StatusInternalServerError)
 	}
+}
+
+func (s *Server) handleGetRoom(w http.ResponseWriter, r *http.Request) {
+	code := strings.TrimPrefix(r.URL.Path, "/api/room/")
+	if code == "" {
+		http.Error(w, "Room code required", http.StatusBadRequest)
+		return
+	}
+
+	s.Hub.Mutex.Lock()
+	room, exists := s.Hub.Rooms[code]
+	s.Hub.Mutex.Unlock()
+
+	if !exists {
+		http.Error(w, "Room not found", http.StatusNotFound)
+		return
+	}
+
+	room.Mutex.Lock()
+	var ownerName string
+	if room.GameState.P1 != nil {
+		ownerName = room.GameState.P1.Name
+	}
+	room.Mutex.Unlock()
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"roomCode":  code,
+		"ownerName": ownerName,
+	})
 }
 
 func (s *Server) handleGetGames(w http.ResponseWriter, r *http.Request) {

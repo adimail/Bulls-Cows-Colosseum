@@ -1,63 +1,24 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import BackToLobby from "../components/BackToLobby";
+import LegendaryCard from "../components/ui/LegendaryCard";
+import RoomCodeForm from "../components/forms/RoomCodeForm";
 
 export default function JoinRoomPage() {
-  const [code, setCode] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (code.length === 6) {
-      navigate(`/room/${code}`);
-    }
-  };
-
   return (
     <div
-      className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4"
+      className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 md:flex-row flex-col md:gap-0 gap-8"
       style={{
         backgroundImage:
-          "url(https://images.unsplash.com/photo-1509024644558-2f56ce76c490?q=80&w=2670&auto=format&fit=crop)",
+          "url(https://images.unsplash.com/photo-1714259184249-b3f85962cfda?q=80&w=2672&auto=format&fit=crop)",
       }}
     >
-      <div className="w-full max-w-md bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-cinzel text-bronze">
-            Join Game
-          </h2>
-          <Link
-            to="/help"
-            className="text-sm text-stone-light hover:text-bronze transition-colors"
-          >
-            How to Play?
-          </Link>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-stone-light mb-2">Room Code</label>
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              maxLength={6}
-              className="w-full bg-input-bg border border-bronze/50 p-3 text-parchment focus:border-bronze outline-none"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-3 bg-bronze hover:bg-bronze/80 text-dark-stone font-bold transition-colors"
-          >
-            Enter Room
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="w-full py-3 text-stone-light hover:text-parchment transition-colors"
-          >
-            Cancel
-          </button>
-        </form>
+      <BackToLobby />
+      <div className="pillar-side left-0 border-r border-stone-800"></div>
+      <div className="pillar-side right-0 border-l border-stone-800"></div>
+
+      <div className="w-full max-w-lg">
+        <LegendaryCard title="Join Arena">
+          <RoomCodeForm />
+        </LegendaryCard>
       </div>
     </div>
   );

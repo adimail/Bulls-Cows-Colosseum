@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
+import { Link } from "react-router-dom";
+import { RefreshCw, Swords, Scroll, Trophy, Users } from "lucide-react";
+import RoomCodeForm from "../components/forms/RoomCodeForm";
+import LegendaryCard from "../components/ui/LegendaryCard";
+import LegendaryButton from "../components/ui/LegendaryButton";
 
 interface RoomInfo {
   roomCode: string;
@@ -20,10 +23,8 @@ interface GameHistory {
 export default function HomePage() {
   const [rooms, setRooms] = useState<RoomInfo[]>([]);
   const [history, setHistory] = useState<GameHistory[]>([]);
-  const [joinCode, setJoinCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const navigate = useNavigate();
   const [serverStatus, setServerStatus] = useState<
     "checking" | "online" | "offline"
   >("checking");
@@ -90,12 +91,6 @@ export default function HomePage() {
     }
   }, [serverStatus]);
 
-  const handleJoin = () => {
-    if (joinCode.length === 6) {
-      navigate(`/room/${joinCode}`);
-    }
-  };
-
   const StatusScreen = ({
     title,
     message,
@@ -107,21 +102,23 @@ export default function HomePage() {
       className="min-h-screen bg-image-overlay text-parchment font-roman flex items-center justify-center p-4 text-center"
       style={{
         backgroundImage:
-          "url(https://images.unsplash.com/photo-1555992828-ca4dbe41d294?q=80&w=1364&auto=format&fit=crop)",
+          "url(https://images.unsplash.com/photo-1746558071199-ec38d4eb8bbd?q=80&w=1287&auto=format&fit=crop)",
       }}
     >
-      <div className="bg-dark-card/80 backdrop-blur-sm p-8 border border-bronze/30 max-w-lg">
-        <h1 className="text-3xl font-cinzel text-bronze mb-4">{title}</h1>
-        <p className="text-lg text-stone-light">{message}</p>
-      </div>
+      <LegendaryCard className="max-w-2xl">
+        <h1 className="text-4xl md:text-5xl font-cinzel text-gold-gradient mb-6 drop-shadow-lg">
+          {title}
+        </h1>
+        <p className="text-xl text-stone-300 font-roman italic">{message}</p>
+      </LegendaryCard>
     </div>
   );
 
   if (serverStatus === "checking") {
     return (
       <StatusScreen
-        title="Connecting to the Colosseum..."
-        message="The server is waking up. Please give it a moment to prepare the arena."
+        title="Summoning the Legions..."
+        message="The gates of the Colosseum are opening. Prepare yourself, Gladiator."
       />
     );
   }
@@ -129,191 +126,219 @@ export default function HomePage() {
   if (serverStatus === "offline") {
     return (
       <StatusScreen
-        title="The Colosseum is Quiet"
-        message="The server could not be reached. It might be temporarily down or you're offline. Please try again later."
+        title="The Arena is Silent"
+        message="The gods are not favoring us today. The server could not be reached."
       />
     );
   }
 
   return (
     <div
-      className="min-h-screen bg-image-overlay text-parchment font-roman"
+      className="min-h-screen bg-image-overlay text-parchment font-roman overflow-x-hidden"
       style={{
         backgroundImage:
-          "url(https://images.unsplash.com/photo-1555992828-ca4dbe41d294?q=80&w=1364&auto=format&fit=crop)",
+          "url(https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1600&q=80&auto=format)",
       }}
     >
-      <div
-        className="min-h-screen p-4 md:p-8 flex flex-col items-center backdrop-blur-xs"
-        style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
-      >
-        <header className="mb-8 md:mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-cinzel text-bronze mb-4">
-            Bulls & Cows Colosseum
+      <div className="pillar-side left-0 border-r border-stone-800"></div>
+      <div className="pillar-side right-0 border-l border-stone-800"></div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
+        <header className="mb-16 text-center relative">
+          <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-yellow-900/50 to-transparent -z-10"></div>
+          <h1 className="text-5xl md:text-7xl font-cinzel font-black text-gold-gradient mb-4 tracking-tighter drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
+            COLOSSEUM
           </h1>
-          <div className="flex md:flex-row flex-col  items-center justify-center md:gap-6">
-            <p className="text-lg md:text-xl text-stone-light">
-              The Ancient Game of Code Breaking
-            </p>
-            <span className="hidden md:block">{" | "}</span>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-stone-400 font-cinzel tracking-widest text-sm md:text-base uppercase">
+            <span className="flex items-center gap-2">
+              <Swords size={16} className="text-crimson" /> Bulls & Cows
+            </span>
+            <span className="hidden md:inline text-yellow-900">•</span>
             <Link
               to="/help"
-              className="text-lg md:text-xl text-stone-light hover:text-bronze transition-colors"
+              className="hover:text-amber-400 transition-colors flex items-center gap-2"
             >
-              How to Play
+              <Scroll size={16} /> Rules of Engagement
             </Link>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 w-full max-w-7xl">
-          <div className="space-y-8 md:sticky md:top-10 md:h-fit">
-            <div className="bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30">
-              <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light mb-6">
-                Start Playing
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+          <div className="lg:col-span-7 space-y-12 sticky top-0">
+            <LegendaryCard className="p-3 md:p-5">
+              <h2 className="text-2xl font-cinzel text-amber-100 mb-8 flex items-center gap-3 border-b border-stone-800 pb-4">
+                <Swords className="text-crimson" /> Enter the Arena
               </h2>
-              <div className="space-y-4">
-                <Link
-                  to="/create"
-                  className="block w-full py-4 bg-crimson hover:bg-crimson/80 text-center text-parchment font-bold transition-colors"
-                >
-                  Create New Game
-                </Link>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Enter Room Code"
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                    maxLength={6}
-                    className="flex-1 bg-input-bg border border-bronze/50 p-3 text-parchment focus:border-bronze outline-none"
-                  />
-                  <button
-                    onClick={handleJoin}
-                    className="px-6 bg-bronze hover:bg-bronze/80 text-dark-stone font-bold transition-colors"
+              <div className="space-y-5">
+                <Link to="/create" className="block group">
+                  <LegendaryButton
+                    variant="crimson"
+                    className="md:text-lg md:py-4 px-0 w-full"
                   >
-                    Join
-                  </button>
-                </div>
-              </div>
-            </div>
+                    Create New Game
+                  </LegendaryButton>
+                </Link>
 
-            <div className="bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light">
-                  Public Lobby
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-stone-800"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-4 bg-[#151210] text-stone-500 font-cinzel uppercase tracking-widest">
+                      Or Join Existing
+                    </span>
+                  </div>
+                </div>
+
+                <RoomCodeForm variant="inline" />
+              </div>
+            </LegendaryCard>
+
+            <LegendaryCard className="p-3 md:p-5">
+              <div className="flex justify-between items-center mb-8 border-b border-stone-800 pb-4">
+                <h2 className="text-xl md:text-2xl font-cinzel text-stone-300 flex items-center gap-3">
+                  <Users className="text-amber-600" /> Public Lobby
                 </h2>
                 <button
                   onClick={fetchRooms}
                   disabled={loading}
-                  className="text-stone-light hover:text-bronze disabled:opacity-50 transition-colors"
+                  className="text-stone-500 hover:text-amber-400 transition-colors p-2 hover:bg-stone-800 rounded-full"
                 >
                   <RefreshCw
                     className={`h-6 w-6 ${loading ? "animate-spin" : ""}`}
                   />
                 </button>
               </div>
-              <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
+
+              <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
                 {loading && rooms.length === 0 ? (
-                  <p className="text-stone-light italic">Loading rooms...</p>
+                  <div className="text-center py-12 text-stone-600 italic font-cinzel">
+                    Scouting for battles...
+                  </div>
                 ) : rooms.length === 0 ? (
-                  <p className="text-stone-light italic">
-                    No open rooms available.
-                  </p>
+                  <div className="text-center py-12 border-2 border-dashed border-stone-800 rounded-lg">
+                    <p className="text-stone-500 font-cinzel mb-2">
+                      The arena is empty.
+                    </p>
+                    <p className="text-stone-600 text-sm">
+                      Be the first to start a match.
+                    </p>
+                  </div>
                 ) : (
                   rooms.map((room) => (
                     <div
                       key={room.roomCode}
-                      className="flex justify-between items-center p-4 bg-dark-stone/50 border border-bronze/20"
+                      className="group flex flex-col md:flex-row justify-between items-center p-6 bg-stone-900/40 border border-stone-800 hover:border-amber-700/50 transition-all duration-300 hover:bg-stone-900/80"
                     >
-                      <div>
-                        <p className="font-bold text-parchment">
+                      <div className="mb-4 md:mb-0 text-center md:text-left">
+                        <p className="font-cinzel font-bold text-amber-100 text-lg group-hover:text-gold-gradient">
                           {room.ownerName}
                         </p>
-                        <p className="text-sm text-stone-light">
-                          Code: {room.roomCode}
+                        <p className="text-xs text-stone-500 font-mono tracking-widest mt-1">
+                          CODE:{" "}
+                          <span className="text-stone-300">
+                            {room.roomCode}
+                          </span>
                         </p>
                       </div>
                       {room.playerCount >= 2 ? (
-                        <Link
-                          to={`/spectate/${room.roomCode}`}
-                          className="px-4 py-2 bg-stone-light/20 hover:bg-bronze hover:text-dark-stone text-stone-light border border-stone-light rounded-none transition-all"
-                        >
-                          Spectate
+                        <Link to={`/spectate/${room.roomCode}`}>
+                          <button className="px-6 py-2 border border-stone-600 text-stone-400 font-cinzel text-sm hover:border-amber-500 hover:text-amber-500 transition-colors uppercase tracking-wider">
+                            Spectate
+                          </button>
                         </Link>
                       ) : (
-                        <Link
-                          to={`/room/${room.roomCode}`}
-                          className="px-4 py-2 bg-bronze/20 hover:bg-bronze hover:text-dark-stone text-bronze border border-bronze rounded-none transition-all"
-                        >
-                          Join
+                        <Link to={`/room/${room.roomCode}`}>
+                          <button className="px-8 py-2 bg-amber-900/20 border border-amber-900/50 text-amber-500 font-cinzel font-bold text-sm hover:bg-amber-900/40 hover:border-amber-500 transition-all uppercase tracking-wider shadow-[0_0_15px_rgba(180,83,9,0.1)] hover:shadow-[0_0_20px_rgba(180,83,9,0.3)]">
+                            Challenge
+                          </button>
                         </Link>
                       )}
                     </div>
                   ))
                 )}
               </div>
-            </div>
+            </LegendaryCard>
           </div>
 
-          <div className="bg-dark-card/80 backdrop-blur-sm p-6 md:p-8 border border-bronze/30 h-fit">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl md:text-3xl font-cinzel text-stone-light">
-                Recent Matches
-              </h2>
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/games"
-                  className="text-stone-light hover:text-bronze transition-colors text-sm font-semibold"
-                >
-                  View All
-                </Link>
-                <button
-                  onClick={fetchHistory}
-                  disabled={historyLoading}
-                  className="text-stone-light hover:text-bronze disabled:opacity-50 transition-colors"
-                >
-                  <RefreshCw
-                    className={`h-6 w-6 ${
-                      historyLoading ? "animate-spin" : ""
-                    }`}
-                  />
-                </button>
+          <div className="lg:col-span-5">
+            <LegendaryCard className="p-3 md:p-5 h-full border-t-4 border-t-amber-700">
+              <div className="flex md:flex-row flex-col md:justify-between items-center mb-8 border-b border-stone-800 pb-4 gap-3 md:gap-0">
+                <h2 className="text-xl font-cinzel text-stone-300 flex items-center gap-3">
+                  <Trophy className="text-yellow-500" /> Hall of Fame
+                </h2>
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/games"
+                    className="text-xs font-cinzel text-stone-500 hover:text-amber-400 uppercase tracking-widest"
+                  >
+                    View All
+                  </Link>
+                  <button
+                    onClick={fetchHistory}
+                    disabled={historyLoading}
+                    className="text-stone-500 hover:text-amber-400 transition-colors"
+                  >
+                    <RefreshCw
+                      className={`h-5 w-5 ${
+                        historyLoading ? "animate-spin" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
-              {historyLoading && history.length === 0 ? (
-                <p className="text-stone-light italic">Loading history...</p>
-              ) : history.length === 0 ? (
-                <p className="text-stone-light italic">
-                  No recent matches found.
-                </p>
-              ) : (
-                <table className="w-full text-left text-sm">
-                  <thead className="text-stone-light uppercase">
-                    <tr>
-                      <th className="p-2">Winner</th>
-                      <th className="p-2">Players</th>
-                      <th className="p-2">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-bronze/20">
-                    {history.map((game, index) => (
-                      <tr key={index} className="hover:bg-dark-stone/30">
-                        <td className="p-2 font-bold text-bronze">
-                          {game.winner}
-                        </td>
-                        <td className="p-2">
-                          {game.p1Name} vs {game.p2Name}
-                        </td>
-                        <td className="p-2 text-stone-light">
-                          {new Date(game.timestamp).toLocaleDateString()}
-                        </td>
+
+              <div className="space-y-1 custom-scrollbar pr-2">
+                {historyLoading && history.length === 0 ? (
+                  <div className="text-center py-12 text-stone-600 italic">
+                    Consulting the scrolls...
+                  </div>
+                ) : history.length === 0 ? (
+                  <div className="text-center py-12 text-stone-600 italic">
+                    No legends written yet.
+                  </div>
+                ) : (
+                  <table className="w-full text-left border-collapse">
+                    <thead className="text-stone-600 font-cinzel text-xs uppercase tracking-widest border-b border-stone-800">
+                      <tr>
+                        <th className="pb-3 pl-2">Victor</th>
+                        <th className="pb-3">Matchup</th>
+                        <th className="pb-3 text-right pr-2">Date</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
+                    </thead>
+                    <tbody className="text-sm font-roman">
+                      {history.map((game, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-white/5 transition-colors group border-b border-stone-800/50 last:border-0"
+                        >
+                          <td className="py-4 pl-2 font-bold text-amber-500 group-hover:text-amber-300 transition-colors">
+                            {game.winner}
+                          </td>
+                          <td className="py-4 text-stone-400">
+                            <span className="text-stone-300">
+                              {game.p1Name}
+                            </span>{" "}
+                            <span className="text-stone-600 text-xs mx-1">
+                              VS
+                            </span>{" "}
+                            <span className="text-stone-300">
+                              {game.p2Name}
+                            </span>
+                          </td>
+                          <td className="py-4 text-right pr-2 text-stone-600 font-mono text-xs">
+                            {new Date(game.timestamp).toLocaleDateString(
+                              undefined,
+                              { month: "short", day: "numeric" },
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </LegendaryCard>
           </div>
         </div>
       </div>
