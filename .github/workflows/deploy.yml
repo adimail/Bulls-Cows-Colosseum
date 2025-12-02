@@ -17,7 +17,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.22.x'
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -50,10 +50,9 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "frontend/dist"
+          source: "dist"
           target: "~/colosseum.ioit.acm.org/"
 
-      # --- NEW STEP ---
       - name: Deploy Restart Script
         uses: appleboy/scp-action@v1
         with:
@@ -61,7 +60,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "restart.sh" # Assumes restart.sh is in your repo's root
+          source: "restart.sh"
           target: "~/colosseum_app/"
 
       - name: Deploy .htaccess and Restart Application
@@ -74,22 +73,17 @@ jobs:
           script: |
             echo "--> Deploying new .htaccess file..."
             cat << 'EOF' > ~/colosseum.ioit.acm.org/.htaccess
-            # .htaccess for Go App with WebSockets
             RewriteEngine On
 
-            # Rule to proxy WebSocket connections to the Go backend
             RewriteCond %{HTTP:Upgrade} =websocket [NC]
             RewriteRule ^ws/?(.*)$ ws://127.0.0.1:8080/ws/$1 [P,L]
 
-            # Rule to proxy API requests to the Go backend
             RewriteRule ^api/(.*)$ http://127.0.0.1:8080/api/$1 [P,L]
 
-            # --- SPA Routing ---
             RewriteCond %{REQUEST_FILENAME} !-f
             RewriteCond %{REQUEST_FILENAME} !-d
             RewriteRule ^(.*)$ /dist/index.html [L]
             EOF
 
             echo "--> Executing restart script on server..."
-            # --- UPDATED PATH ---
             bash ~/colosseum_app/restart.sh
