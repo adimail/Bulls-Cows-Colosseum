@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Deploy Colosseum App to cPanel
 
 on:
@@ -50,7 +49,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist"
+          source: "dist/*"
           target: "~/colosseum.ioit.acm.org/"
 
       - name: Deploy Restart Script
@@ -63,7 +62,7 @@ jobs:
           source: "restart.sh"
           target: "~/colosseum_app/"
 
-      - name: Deploy .htaccess and Restart Application
+      - name: Restart Application
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -71,19 +70,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "--> Deploying new .htaccess file..."
-            cat << 'EOF' > ~/colosseum.ioit.acm.org/.htaccess
-            RewriteEngine On
-
-            RewriteCond %{HTTP:Upgrade} =websocket [NC]
-            RewriteRule ^ws/?(.*)$ ws://127.0.0.1:8080/ws/$1 [P,L]
-
-            RewriteRule ^api/(.*)$ http://127.0.0.1:8080/api/$1 [P,L]
-
-            RewriteCond %{REQUEST_FILENAME} !-f
-            RewriteCond %{REQUEST_FILENAME} !-d
-            RewriteRule ^(.*)$ /dist/index.html [L]
-            EOF
-
             echo "--> Executing restart script on server..."
             bash ~/colosseum_app/restart.sh
