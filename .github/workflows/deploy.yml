@@ -49,7 +49,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/*"
+          source: "dist"
           target: "~/colosseum.ioit.acm.org/"
 
       - name: Deploy Restart Script
